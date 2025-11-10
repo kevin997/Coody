@@ -12,7 +12,9 @@ import {
   Target,
   Users,
   Globe,
-  BookOpen
+  BookOpen,
+  Mail,
+  MessageCircle
 } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -257,6 +259,58 @@ export default function AboutPage() {
                 <Badge className="text-base py-2 px-4">Data Science</Badge>
                 <Badge className="text-base py-2 px-4">Et plus encore...</Badge>
               </div>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
+      {/* Contact Section */}
+      <section className="container px-4 pb-16">
+        <div className="mx-auto max-w-4xl">
+          <h2 className="text-3xl font-bold text-center mb-8">
+            Contactez-moi
+          </h2>
+          <Card>
+            <CardContent className="py-8">
+              <div className="grid md:grid-cols-2 gap-6">
+                {/* Email */}
+                <a 
+                  href="mailto:kevinliboire@gmail.com"
+                  className="flex items-center gap-4 p-6 rounded-lg border border-border hover:border-primary hover:bg-muted/50 transition-all group"
+                >
+                  <div className="flex items-center justify-center w-12 h-12 bg-primary/10 rounded-full group-hover:bg-primary/20 transition-colors">
+                    <Mail className="h-6 w-6 text-primary" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="text-sm text-muted-foreground mb-1">Email</div>
+                    <div className="font-medium text-foreground group-hover:text-primary transition-colors">
+                      kevinliboire@gmail.com
+                    </div>
+                  </div>
+                </a>
+
+                {/* WhatsApp */}
+                <a 
+                  href="https://wa.me/237680170569"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-4 p-6 rounded-lg border border-border hover:border-success hover:bg-muted/50 transition-all group"
+                >
+                  <div className="flex items-center justify-center w-12 h-12 bg-success/10 rounded-full group-hover:bg-success/20 transition-colors">
+                    <MessageCircle className="h-6 w-6 text-success" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="text-sm text-muted-foreground mb-1">WhatsApp</div>
+                    <div className="font-medium text-foreground group-hover:text-success transition-colors">
+                      +237 680 17 05 69
+                    </div>
+                  </div>
+                </a>
+              </div>
+
+              <p className="text-center text-muted-foreground mt-8">
+                N'hésitez pas à me contacter pour toute question ou suggestion concernant Coody!
+              </p>
             </CardContent>
           </Card>
         </div>
