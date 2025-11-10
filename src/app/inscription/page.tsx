@@ -190,7 +190,7 @@ export default function InscriptionPage() {
             <Button 
               type="submit" 
               className="w-full" 
-              disabled={isLoading || (process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && !turnstileToken)}
+              disabled={isLoading || (!!process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && !turnstileToken)}
             >
               {isLoading ? (
                 <>
