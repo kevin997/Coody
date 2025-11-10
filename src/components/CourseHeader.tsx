@@ -59,6 +59,12 @@ export function CourseHeader({ onMenuClick }: CourseHeaderProps) {
               Accueil
             </Link>
             <Link
+              href="/about"
+              className="transition-colors hover:text-foreground/80 text-foreground/60"
+            >
+              À propos
+            </Link>
+            <Link
               href="/parcours"
               className="transition-colors hover:text-foreground/80 text-foreground/60"
             >
