@@ -44,133 +44,72 @@
 }
 
 :root {
-  /* ============================================
-     COODY LEARNING PLATFORM - COLOR SYSTEM
-     Optimized for learner engagement & focus
-     ============================================ */
-  
-  /* Border Radius */
   --radius: 0.625rem;
-  
-  /* PRIMARY - Deep Blue (Focus, Trust, Clarity) 
-     Promotes concentration and learning retention */
-  --primary: 221 83% 53%;           /* #2563eb - Vibrant Blue */
-  --primary-foreground: 0 0% 100%;  /* White text on primary */
-  
-  /* SECONDARY - Calm Purple (Creativity, Wisdom)
-     Encourages creative thinking */
-  --secondary: 262 52% 47%;         /* #6d28d9 - Royal Purple */
-  --secondary-foreground: 0 0% 100%;
-  
-  /* SUCCESS - Fresh Green (Growth, Achievement)
-     Celebrates progress and completion */
-  --success: 142 76% 36%;           /* #16a34a - Growth Green */
-  --success-foreground: 0 0% 100%;
-  
-  /* ACCENT - Warm Orange (Energy, Motivation)
-     Drives action and engagement */
-  --accent: 25 95% 53%;             /* #f97316 - Energetic Orange */
-  --accent-foreground: 0 0% 100%;
-  
-  /* DESTRUCTIVE - Clear Red (Warnings, Errors) */
-  --destructive: 0 84% 60%;         /* #ef4444 - Alert Red */
-  --destructive-foreground: 0 0% 100%;
-  
-  /* BACKGROUNDS - Soft & Easy on Eyes */
-  --background: 0 0% 100%;          /* Pure White */
-  --foreground: 222 47% 11%;        /* Deep Navy Text */
-  
-  --card: 0 0% 100%;                /* White Cards */
-  --card-foreground: 222 47% 11%;
-  
-  --popover: 0 0% 100%;
-  --popover-foreground: 222 47% 11%;
-  
-  /* MUTED - Subtle Backgrounds */
-  --muted: 214 32% 91%;             /* Light Blue-Gray */
-  --muted-foreground: 215 16% 47%;  /* Medium Gray */
-  
-  /* BORDERS & INPUTS */
-  --border: 214 32% 91%;            /* Soft borders */
-  --input: 214 32% 91%;             /* Input backgrounds */
-  --ring: 221 83% 53%;              /* Focus ring (primary) */
-  
-  /* CHARTS - Diverse & Accessible */
-  --chart-1: 221 83% 53%;           /* Blue */
-  --chart-2: 142 76% 36%;           /* Green */
-  --chart-3: 262 52% 47%;           /* Purple */
-  --chart-4: 25 95% 53%;            /* Orange */
-  --chart-5: 340 82% 52%;           /* Pink */
-  
-  /* SIDEBAR */
-  --sidebar: 0 0% 100%;
-  --sidebar-foreground: 222 47% 11%;
-  --sidebar-primary: 221 83% 53%;
-  --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 214 32% 91%;
-  --sidebar-accent-foreground: 222 47% 11%;
-  --sidebar-border: 214 32% 91%;
-  --sidebar-ring: 221 83% 53%;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
 }
 
 .dark {
-  /* DARK MODE - Optimized for night learning */
-  
-  /* PRIMARY - Bright Blue (Maintains focus in dark) */
-  --primary: 217 91% 60%;           /* #3b82f6 - Lighter Blue */
-  --primary-foreground: 222 47% 11%;
-  
-  /* SECONDARY - Soft Purple */
-  --secondary: 262 83% 58%;         /* #8b5cf6 - Lighter Purple */
-  --secondary-foreground: 0 0% 100%;
-  
-  /* SUCCESS - Vibrant Green */
-  --success: 142 71% 45%;           /* #22c55e - Brighter Green */
-  --success-foreground: 222 47% 11%;
-  
-  /* ACCENT - Warm Orange */
-  --accent: 25 95% 60%;             /* #fb923c - Softer Orange */
-  --accent-foreground: 222 47% 11%;
-  
-  /* DESTRUCTIVE */
-  --destructive: 0 72% 51%;         /* #dc2626 */
-  --destructive-foreground: 0 0% 100%;
-  
-  /* BACKGROUNDS */
-  --background: 222 47% 11%;        /* Deep Navy */
-  --foreground: 210 40% 98%;        /* Off-white */
-  
-  --card: 222 47% 15%;              /* Slightly lighter cards */
-  --card-foreground: 210 40% 98%;
-  
-  --popover: 222 47% 15%;
-  --popover-foreground: 210 40% 98%;
-  
-  /* MUTED */
-  --muted: 217 33% 17%;             /* Darker muted */
-  --muted-foreground: 215 20% 65%;  /* Lighter muted text */
-  
-  /* BORDERS & INPUTS */
-  --border: 217 33% 17%;
-  --input: 217 33% 17%;
-  --ring: 217 91% 60%;
-  
-  /* CHARTS */
-  --chart-1: 217 91% 60%;           /* Blue */
-  --chart-2: 142 71% 45%;           /* Green */
-  --chart-3: 262 83% 58%;           /* Purple */
-  --chart-4: 25 95% 60%;            /* Orange */
-  --chart-5: 340 75% 55%;           /* Pink */
-  
-  /* SIDEBAR */
-  --sidebar: 222 47% 15%;
-  --sidebar-foreground: 210 40% 98%;
-  --sidebar-primary: 217 91% 60%;
-  --sidebar-primary-foreground: 222 47% 11%;
-  --sidebar-accent: 217 33% 17%;
-  --sidebar-accent-foreground: 210 40% 98%;
-  --sidebar-border: 217 33% 17%;
-  --sidebar-ring: 217 91% 60%;
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
 }
 
 @layer base {
@@ -179,99 +118,5 @@
   }
   body {
     @apply bg-background text-foreground;
-  }
-  
-  /* Mobile-First Responsive Typography */
-  html {
-    font-size: 16px;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-  
-  /* Improved touch targets for mobile */
-  button, a, input, select, textarea {
-    min-height: 44px; /* Apple's recommended touch target */
-    @apply touch-manipulation;
-  }
-  
-  /* Smooth scrolling for better UX */
-  html {
-    scroll-behavior: smooth;
-  }
-  
-  /* Better focus states for accessibility */
-  *:focus-visible {
-    @apply outline-2 outline-offset-2 outline-primary;
-  }
-}
-
-@layer components {
-  /* Success color utilities */
-  .bg-success {
-    background-color: hsl(var(--success));
-  }
-  .text-success {
-    color: hsl(var(--success));
-  }
-  .border-success {
-    border-color: hsl(var(--success));
-  }
-  .bg-success-foreground {
-    background-color: hsl(var(--success-foreground));
-  }
-  .text-success-foreground {
-    color: hsl(var(--success-foreground));
-  }
-  
-  /* Learning-specific utilities */
-  .progress-complete {
-    @apply bg-success text-success-foreground;
-  }
-  .progress-pending {
-    @apply bg-muted text-muted-foreground;
-  }
-  .progress-active {
-    @apply bg-accent text-accent-foreground;
-  }
-  
-  /* Card hover effects for better engagement */
-  .card-hover {
-    @apply transition-all duration-200 hover:shadow-lg hover:scale-[1.02];
-  }
-  
-  /* Improved button animations */
-  .btn-animated {
-    @apply transition-all duration-200 active:scale-95;
-  }
-}
-
-@layer utilities {
-  /* Mobile-specific utilities */
-  .safe-area-inset-top {
-    padding-top: env(safe-area-inset-top);
-  }
-  .safe-area-inset-bottom {
-    padding-bottom: env(safe-area-inset-bottom);
-  }
-  
-  /* Prevent text selection on UI elements */
-  .no-select {
-    -webkit-user-select: none;
-    user-select: none;
-  }
-  
-  /* Better scrollbar styling */
-  .custom-scrollbar::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-  }
-  .custom-scrollbar::-webkit-scrollbar-track {
-    @apply bg-muted;
-  }
-  .custom-scrollbar::-webkit-scrollbar-thumb {
-    @apply bg-muted-foreground/30 rounded-full;
-  }
-  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    @apply bg-muted-foreground/50;
   }
 }
