@@ -41,9 +41,11 @@ Vercel will auto-detect Next.js. Verify these settings:
 
 - **Framework Preset**: Next.js
 - **Root Directory**: `./` (leave as default)
-- **Build Command**: `prisma generate && next build` (from vercel.json)
+- **Build Command**: `prisma migrate deploy && prisma generate && next build` (from vercel.json)
 - **Install Command**: `npm install` (from vercel.json)
 - **Output Directory**: `.next` (auto-detected)
+
+> ✅ **Automatic Migrations**: Database migrations run automatically on every deployment via `prisma migrate deploy`
 
 ### 4. Add Environment Variables
 
@@ -103,7 +105,7 @@ Then **redeploy**:
 ```json
 {
   "framework": "nextjs",
-  "buildCommand": "prisma generate && next build",
+  "buildCommand": "prisma migrate deploy && prisma generate && next build",
   "installCommand": "npm install",
   "env": {
     "VERCEL_FORCE_NO_BUILD_CACHE": "1"
@@ -113,10 +115,27 @@ Then **redeploy**:
 
 ### Why These Settings?
 
+- **`prisma migrate deploy`**: Automatically applies pending database migrations on every deployment
 - **`prisma generate`**: Generates Prisma Client before build
 - **`VERCEL_FORCE_NO_BUILD_CACHE`**: Ensures fresh Prisma generation each time
-- **No `prisma db push`**: We don't push schema changes in production
-- **No `prisma migrate deploy`**: Our database is already migrated
+- **No `prisma db push`**: We use migrations instead of pushing schema directly
+
+### How Automatic Migrations Work
+
+```bash
+# On every Vercel deployment:
+1. npm install                     # Install dependencies
+2. prisma migrate deploy          # ✅ Apply pending migrations
+3. prisma generate                # Generate Prisma Client
+4. next build                     # Build Next.js app
+5. Deploy                         # Upload to Vercel
+
+# Benefits:
+✅ Database schema always up-to-date
+✅ No manual migration commands needed
+✅ Safe migration rollback support
+✅ Consistent across all deployments
+```
 
 ---
 
