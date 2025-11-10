@@ -1,7 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { 
   Code, 
   Database, 
@@ -15,6 +15,7 @@ import {
   BookOpen
 } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function AboutPage() {
   return (
@@ -85,12 +86,16 @@ export default function AboutPage() {
         <div className="mx-auto max-w-4xl">
           <Card className="overflow-hidden">
             <div className="md:flex">
-              <div className="md:w-1/3 bg-gradient-to-br from-primary to-secondary p-12 flex items-center justify-center">
-                <Avatar className="h-32 w-32 border-4 border-white">
-                  <AvatarFallback className="text-4xl bg-white text-primary">
-                    OK
-                  </AvatarFallback>
-                </Avatar>
+              <div className="md:w-1/3 bg-gradient-to-br from-primary to-secondary p-8 flex items-center justify-center relative overflow-hidden">
+                <div className="relative w-full h-64 md:h-full min-h-[300px]">
+                  <Image
+                    src="/photo-de-ovanga-liboire-kevin-en-salle-de-formation.jpg"
+                    alt="Ovanga Liboire Kevin - Fondateur de Coody"
+                    fill
+                    className="object-cover object-center"
+                    priority
+                  />
+                </div>
               </div>
               <div className="md:w-2/3 p-8">
                 <Badge className="mb-4">Fondateur & Créateur</Badge>
