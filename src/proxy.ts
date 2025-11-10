@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { auth } from "@/auth";
 
-export function proxy(req: NextRequest) {
+export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   // Only protect specific routes that need authentication
@@ -17,11 +18,10 @@ export function proxy(req: NextRequest) {
     return NextResponse.next();
   }
 
-  // For protected routes, check for session token
-  const token = req.cookies.get('next-auth.session-token') || 
-                req.cookies.get('__Secure-next-auth.session-token');
+  // For protected routes, check authentication using NextAuth
+  const session = await auth();
 
-  if (!token) {
+  if (!session) {
     const loginUrl = new URL('/connexion', req.url);
     loginUrl.searchParams.set('callbackUrl', pathname);
     return NextResponse.redirect(loginUrl);
