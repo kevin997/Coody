@@ -1,41 +1,35 @@
-import { auth } from "@/auth";
 import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
-export default auth((req) => {
+export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
-  const isLoggedIn = !!req.auth;
 
-  // Public routes that don't require authentication
-  const publicRoutes = [
-    '/',
-    '/connexion',
-    '/inscription',
-    '/parcours',
-    '/about',
-    '/api/register',
-    '/api/auth',
-  ];
-
-  // Check if the current path is public
-  const isPublicRoute = publicRoutes.some(route => 
-    pathname === route || pathname.startsWith(`${route}/`)
+  // Only protect specific routes that need authentication
+  const protectedRoutes = ['/mes-cours', '/cours'];
+  
+  // Check if current path is protected
+  const isProtectedRoute = protectedRoutes.some(route => 
+    pathname.startsWith(route)
   );
 
-  // Allow access to public routes and static files
-  if (isPublicRoute || pathname.startsWith('/_next') || pathname.startsWith('/api/auth')) {
+  // Let public routes through
+  if (!isProtectedRoute) {
     return NextResponse.next();
   }
 
-  // Redirect to login if not authenticated
-  if (!isLoggedIn) {
+  // For protected routes, check for session token
+  const token = req.cookies.get('next-auth.session-token') || 
+                req.cookies.get('__Secure-next-auth.session-token');
+
+  if (!token) {
     const loginUrl = new URL('/connexion', req.url);
     loginUrl.searchParams.set('callbackUrl', pathname);
     return NextResponse.redirect(loginUrl);
   }
 
   return NextResponse.next();
-});
+}
 
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
+  matcher: ['/mes-cours/:path*', '/cours/:path*'],
 };
