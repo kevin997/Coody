@@ -2,17 +2,38 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { signIn } from "@/auth";
+import { verifyTurnstileToken, getClientIp } from "@/lib/turnstile";
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { email, name, password, role = "learner" } = body;
+    const { email, name, password, role = "learner", turnstileToken } = body;
 
     // Validation
     if (!email || !name || !password) {
       return NextResponse.json(
         { error: "Tous les champs sont requis" },
         { status: 400 }
+      );
+    }
+
+    // Verify Turnstile token (CAPTCHA protection)
+    if (turnstileToken) {
+      const clientIp = getClientIp(request);
+      const verification = await verifyTurnstileToken(turnstileToken, clientIp);
+
+      if (!verification.success) {
+        console.warn('Turnstile verification failed:', verification.error_codes);
+        return NextResponse.json(
+          { error: "Échec de la vérification de sécurité. Veuillez réessayer." },
+          { status: 403 }
+        );
+      }
+    } else if (process.env.NODE_ENV === 'production') {
+      // In production, require Turnstile token
+      return NextResponse.json(
+        { error: "Vérification de sécurité requise" },
+        { status: 403 }
       );
     }
 

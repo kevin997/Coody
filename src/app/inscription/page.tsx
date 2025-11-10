@@ -4,17 +4,19 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
+import { Turnstile } from '@marsidev/react-turnstile';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { BookOpen, Loader2 } from 'lucide-react';
+import { BookOpen, Loader2, Shield } from 'lucide-react';
 
 export default function InscriptionPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [turnstileToken, setTurnstileToken] = useState<string>('');
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -42,6 +44,12 @@ export default function InscriptionPage() {
       return;
     }
 
+    // Verify CAPTCHA (in production)
+    if (process.env.NODE_ENV === 'production' && !turnstileToken) {
+      setError('Veuillez compléter la vérification de sécurité');
+      return;
+    }
+
     setIsLoading(true);
 
     try {
@@ -55,6 +63,7 @@ export default function InscriptionPage() {
           name: formData.name,
           email: formData.email,
           password: formData.password,
+          turnstileToken,
         }),
       });
 
@@ -157,6 +166,26 @@ export default function InscriptionPage() {
                 required
               />
             </div>
+
+            {/* Cloudflare Turnstile CAPTCHA */}
+            {process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && (
+              <div className="flex flex-col items-center space-y-2">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Shield className="h-4 w-4" />
+                  <span>Protection contre les robots</span>
+                </div>
+                <Turnstile
+                  siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
+                  onSuccess={setTurnstileToken}
+                  onError={() => setError('Erreur de vérification de sécurité')}
+                  onExpire={() => setTurnstileToken('')}
+                  options={{
+                    theme: 'light',
+                    size: 'normal',
+                  }}
+                />
+              </div>
+            )}
 
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? (
