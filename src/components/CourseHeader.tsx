@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
@@ -11,7 +11,10 @@ import {
   Settings, 
   LogOut, 
   User,
-  Menu
+  Menu,
+  X,
+  BookOpen,
+  Info
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -21,6 +24,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from './ui/sheet';
+import { Separator } from './ui/separator';
 import Link from 'next/link';
 
 interface CourseHeaderProps {
@@ -30,19 +41,133 @@ interface CourseHeaderProps {
 export function CourseHeader({ onMenuClick }: CourseHeaderProps) {
   const { data: session } = useSession();
   const user = session?.user;
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center px-4">
         <div className="flex items-center gap-4 flex-1">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="md:hidden"
-            onClick={onMenuClick}
-          >
-            <Menu className="h-5 w-5" />
-          </Button>
+          {/* Mobile Menu */}
+          <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+            <SheetTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="md:hidden"
+              >
+                <Menu className="h-5 w-5" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-[300px] sm:w-[400px]">
+              <SheetHeader>
+                <SheetTitle className="flex items-center space-x-2">
+                  <div className="flex items-center justify-center w-8 h-8 bg-primary rounded-lg">
+                    <span className="text-primary-foreground font-bold text-lg">C</span>
+                  </div>
+                  <span className="font-bold text-xl">Coody</span>
+                </SheetTitle>
+              </SheetHeader>
+              
+              <div className="flex flex-col gap-4 mt-8">
+                <Link
+                  href="/"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-muted transition-colors"
+                >
+                  <Home className="h-5 w-5" />
+                  <span className="text-base font-medium">Accueil</span>
+                </Link>
+                
+                <Link
+                  href="/about"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-muted transition-colors"
+                >
+                  <Info className="h-5 w-5" />
+                  <span className="text-base font-medium">À propos</span>
+                </Link>
+                
+                <Link
+                  href="/parcours"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-muted transition-colors"
+                >
+                  <BookOpen className="h-5 w-5" />
+                  <span className="text-base font-medium">Parcours</span>
+                </Link>
+                
+                <Link
+                  href="/mes-cours"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-muted transition-colors"
+                >
+                  <Book className="h-5 w-5" />
+                  <span className="text-base font-medium">Mes Cours</span>
+                </Link>
+                
+                <Separator className="my-2" />
+                
+                {user ? (
+                  <>
+                    <div className="px-4 py-2">
+                      <div className="flex items-center gap-3 mb-4">
+                        <Avatar className="h-12 w-12">
+                          <AvatarImage src={user.avatar || undefined} alt={user.name || 'User'} />
+                          <AvatarFallback>{user.name?.charAt(0).toUpperCase() || 'U'}</AvatarFallback>
+                        </Avatar>
+                        <div className="flex flex-col">
+                          <p className="text-sm font-medium">{user.name || 'Utilisateur'}</p>
+                          <p className="text-xs text-muted-foreground">{user.email || ''}</p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <Link
+                      href="/profile"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-muted transition-colors"
+                    >
+                      <User className="h-5 w-5" />
+                      <span className="text-base font-medium">Profil</span>
+                    </Link>
+                    
+                    <Link
+                      href="/settings"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-muted transition-colors"
+                    >
+                      <Settings className="h-5 w-5" />
+                      <span className="text-base font-medium">Paramètres</span>
+                    </Link>
+                    
+                    <button
+                      onClick={() => {
+                        setMobileMenuOpen(false);
+                        signOut({ callbackUrl: '/' });
+                      }}
+                      className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-destructive/10 text-destructive transition-colors w-full"
+                    >
+                      <LogOut className="h-5 w-5" />
+                      <span className="text-base font-medium">Déconnexion</span>
+                    </button>
+                  </>
+                ) : (
+                  <div className="flex flex-col gap-2 px-4">
+                    <Button asChild className="w-full">
+                      <Link href="/inscription" onClick={() => setMobileMenuOpen(false)}>
+                        Inscription
+                      </Link>
+                    </Button>
+                    <Button variant="outline" asChild className="w-full">
+                      <Link href="/connexion" onClick={() => setMobileMenuOpen(false)}>
+                        Connexion
+                      </Link>
+                    </Button>
+                  </div>
+                )}
+              </div>
+            </SheetContent>
+          </Sheet>
           
           <Link href="/" className="flex items-center space-x-2">
             <div className="flex items-center justify-center w-8 h-8 bg-primary rounded-lg">
