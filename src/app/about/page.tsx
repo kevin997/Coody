@@ -114,7 +114,7 @@ export default function AboutPage() {
                   </p>
 
                   <p className="text-muted-foreground">
-                    En tant que fondateur de <strong>PayUble</strong> et <strong>Okenly Web Services</strong>, 
+                    En tant que co-fondateur de <a href="https://kursa.csl-brands.com">KURSA</a> et <a href="https://csl-brands.com">CSL Brands</a>, 
                     Kevin a développé une expertise dans la création de solutions innovantes et 
                     évolutives pour les entreprises en ligne.
                   </p>
