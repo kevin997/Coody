@@ -101,7 +101,7 @@ export default function AboutPage() {
               </div>
               <div className="md:w-2/3 p-8">
                 <Badge className="mb-4">Fondateur & Créateur</Badge>
-                <h2 className="text-3xl font-bold mb-2">Ovanga Liboire Kevin</h2>
+                <h2 className="text-3xl font-bold mb-2"><a href="https://www.linkedin.com/in/ovanga-liboire-kevin-titan/">Ovanga Liboire Kevin</a></h2>
                 <p className="text-muted-foreground mb-6">
                   Développeur autodidacte · Data Analyst · Entrepreneur
                 </p>
