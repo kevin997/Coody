@@ -39,10 +39,10 @@ export async function GET() {
       select: { assessmentId: true, completedAt: true, percentage: true, levelAssigned: true },
     });
     const completionMap = new Map(
-      menteeAssessments.map((ma) => [ma.assessmentId, ma])
+      menteeAssessments.map((ma: any) => [ma.assessmentId, ma])
     );
 
-    const result = enrollments.map((e) => ({
+    const result = enrollments.map((e: any) => ({
       id: e.id,
       enrolledAt: e.enrolledAt,
       completedAt: e.completedAt,
@@ -58,8 +58,8 @@ export async function GET() {
         color: e.pathway.color,
         level: e.pathway.level,
         duration: e.pathway.duration,
-        assessments: e.pathway.assessments.map((pa) => {
-          const completion = completionMap.get(pa.assessment.id);
+        assessments: e.pathway.assessments.map((pa: any) => {
+          const completion: any = completionMap.get(pa.assessment.id);
           return {
             id: pa.assessment.id,
             title: pa.assessment.title,

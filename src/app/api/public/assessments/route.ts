@@ -13,7 +13,7 @@ export async function GET() {
       orderBy: { createdAt: "desc" },
     });
 
-    const result = assessments.map((a) => ({
+    const result = assessments.map((a: any) => ({
       id: a.id,
       title: a.title,
       titleEn: a.titleEn,

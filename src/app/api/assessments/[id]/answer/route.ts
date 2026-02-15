@@ -56,7 +56,7 @@ export async function POST(
     if (question.type === "MULTIPLE_CHOICE") {
       if (!selectedOptionId) return badRequest("Veuillez sélectionner une option");
 
-      const selectedOption = question.options.find((o) => o.id === selectedOptionId);
+      const selectedOption = question.options.find((o: any) => o.id === selectedOptionId);
       if (!selectedOption) return badRequest("Option invalide");
 
       isCorrect = selectedOption.isCorrect;
@@ -122,7 +122,7 @@ export async function POST(
       response.isCorrect = isCorrect;
       response.pointsEarned = pointsEarned;
       // Find the correct option to show explanation
-      const correctOption = question.options.find((o) => o.isCorrect);
+      const correctOption = question.options.find((o: any) => o.isCorrect);
       response.correctOptionId = correctOption?.id;
       response.explanation = correctOption?.explanation;
     }

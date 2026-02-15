@@ -63,7 +63,7 @@ export async function GET(
         categoryStats,
         myAttempt: assessment.menteeAssessments[0] || null,
         isStarted: assessment.menteeAssessments.length > 0,
-        isCompleted: assessment.menteeAssessments.some((ma) => ma.completedAt !== null),
+        isCompleted: assessment.menteeAssessments.some((ma: any) => ma.completedAt !== null),
       },
     });
   } catch (error) {

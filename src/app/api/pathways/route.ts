@@ -29,7 +29,7 @@ export async function GET() {
       orderBy: { order: "asc" },
     });
 
-    const result = pathways.map((p) => ({
+    const result = pathways.map((p: any) => ({
       id: p.id,
       title: p.title,
       titleEn: p.titleEn,
@@ -44,7 +44,7 @@ export async function GET() {
       duration: p.duration,
       order: p.order,
       enrollmentCount: p._count.enrollments,
-      assessments: p.assessments.map((pa) => ({
+      assessments: p.assessments.map((pa: any) => ({
         id: pa.assessment.id,
         title: pa.assessment.title,
         titleEn: pa.assessment.titleEn,

@@ -167,7 +167,7 @@ export default function AssessmentDetailPage() {
             </div>
             <div className="text-center p-4 bg-muted rounded-lg">
               <Shield className="h-6 w-6 mx-auto mb-2 text-primary" />
-              <p className="text-2xl font-bold">3</p>
+              <p className="text-2xl font-bold">{Object.keys(assessment.categoryStats).length}</p>
               <p className="text-xs text-muted-foreground">{t.common.categories}</p>
             </div>
           </div>
@@ -181,11 +181,15 @@ export default function AssessmentDetailPage() {
                   DATA_STRUCTURES: t.assessment.dataStructures,
                   ALGORITHMS: t.assessment.algorithms,
                   OOP: t.assessment.oop,
+                  CRITICAL_THINKING: t.assessment.criticalThinking,
+                  LOGICAL_REASONING: t.assessment.logicalReasoning,
                 };
                 const weights: Record<string, string> = {
-                  DATA_STRUCTURES: '35%',
-                  ALGORITHMS: '40%',
-                  OOP: '25%',
+                  DATA_STRUCTURES: '20%',
+                  ALGORITHMS: '25%',
+                  OOP: '15%',
+                  CRITICAL_THINKING: '20%',
+                  LOGICAL_REASONING: '20%',
                 };
                 return (
                   <div key={cat} className="flex items-center justify-between p-3 border rounded-lg">

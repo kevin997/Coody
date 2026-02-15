@@ -31,7 +31,7 @@ export async function GET() {
       orderBy: [{ totalScore: "desc" }, { assessmentCompletedAt: "asc" }],
     });
 
-    const leaderboard = mentees.map((m, index) => ({
+    const leaderboard = mentees.map((m: any, index: number) => ({
       rank: index + 1,
       id: m.id,
       name: m.name,
@@ -47,17 +47,17 @@ export async function GET() {
     const stats = {
       totalAssessed: mentees.length,
       levelDistribution: {
-        EXPERT: mentees.filter((m) => m.level === "EXPERT").length,
-        ADVANCED: mentees.filter((m) => m.level === "ADVANCED").length,
-        INTERMEDIATE: mentees.filter((m) => m.level === "INTERMEDIATE").length,
-        BEGINNER: mentees.filter((m) => m.level === "BEGINNER").length,
+        EXPERT: mentees.filter((m: any) => m.level === "EXPERT").length,
+        ADVANCED: mentees.filter((m: any) => m.level === "ADVANCED").length,
+        INTERMEDIATE: mentees.filter((m: any) => m.level === "INTERMEDIATE").length,
+        BEGINNER: mentees.filter((m: any) => m.level === "BEGINNER").length,
       },
       averageScore:
         mentees.length > 0
           ? Math.round(
-              mentees.reduce((sum, m) => sum + (m.totalScore || 0), 0) /
-                mentees.length
-            )
+            mentees.reduce((sum: number, m: any) => sum + (m.totalScore || 0), 0) /
+            mentees.length
+          )
           : 0,
     };
 

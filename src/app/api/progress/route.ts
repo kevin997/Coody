@@ -6,7 +6,7 @@ import { prisma } from "@/lib/prisma";
 export async function GET(request: NextRequest) {
   try {
     const session = await auth();
-    
+
     if (!session?.user?.id) {
       return NextResponse.json(
         { error: "Non authentifié" },
@@ -52,7 +52,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const session = await auth();
-    
+
     if (!session?.user?.id) {
       return NextResponse.json(
         { error: "Non authentifié" },
@@ -86,7 +86,7 @@ export async function POST(request: NextRequest) {
     if (action === "complete" && !completedSections.includes(sectionId)) {
       completedSections = [...completedSections, sectionId];
     } else if (action === "uncomplete") {
-      completedSections = completedSections.filter(id => id !== sectionId);
+      completedSections = completedSections.filter((id: any) => id !== sectionId);
     }
 
     // Upsert progress

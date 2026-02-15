@@ -50,6 +50,11 @@ export function CourseHeader({ onMenuClick }: CourseHeaderProps) {
   const { locale, setLocale, t } = useLocale();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  // Hide header on assessment take pages (fullscreen mode has its own top bar)
+  if (pathname.match(/^\/assessment\/[^/]+\/take/)) {
+    return null;
+  }
+
   function isActive(href: string) {
     if (href === '/') return pathname === '/';
     return pathname === href || pathname.startsWith(href + '/');

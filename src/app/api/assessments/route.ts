@@ -26,7 +26,7 @@ export async function GET() {
       orderBy: { createdAt: "desc" },
     });
 
-    const result = assessments.map((a) => ({
+    const result = assessments.map((a: any) => ({
       id: a.id,
       title: a.title,
       titleEn: a.titleEn,
@@ -34,7 +34,7 @@ export async function GET() {
       descriptionEn: a.descriptionEn,
       durationMinutes: a.durationMinutes,
       questionCount: a._count.questions,
-      isCompleted: a.menteeAssessments.some((ma) => ma.completedAt !== null),
+      isCompleted: a.menteeAssessments.some((ma: any) => ma.completedAt !== null),
       myAttempt: a.menteeAssessments[0] || null,
     }));
 

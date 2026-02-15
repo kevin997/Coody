@@ -115,7 +115,7 @@ export async function POST(
 
     // Calculate final score
     const scoringResult = calculateScore({
-      answers: updatedAnswers.map((a) => ({
+      answers: updatedAnswers.map((a: any) => ({
         questionCategory: a.question.category as any,
         pointsEarned: a.pointsEarned,
         maxPoints: a.question.points,
@@ -125,7 +125,7 @@ export async function POST(
     });
 
     // Calculate max score from all questions
-    const maxScore = assessment.questions.reduce((sum, q) => sum + q.points, 0);
+    const maxScore = assessment.questions.reduce((sum: number, q: any) => sum + q.points, 0);
 
     // Update mentee assessment
     await prisma.menteeAssessment.update({

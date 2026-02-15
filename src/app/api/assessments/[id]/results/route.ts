@@ -47,9 +47,11 @@ export async function GET(
       DATA_STRUCTURES: { score: 0, maxScore: 0, questions: 0 },
       ALGORITHMS: { score: 0, maxScore: 0, questions: 0 },
       OOP: { score: 0, maxScore: 0, questions: 0 },
+      CRITICAL_THINKING: { score: 0, maxScore: 0, questions: 0 },
+      LOGICAL_REASONING: { score: 0, maxScore: 0, questions: 0 },
     };
 
-    const detailedAnswers = menteeAssessment.answers.map((a) => {
+    const detailedAnswers = menteeAssessment.answers.map((a: any) => {
       const cat = a.question.category;
       if (categoryBreakdown[cat]) {
         categoryBreakdown[cat].score += a.pointsEarned;
@@ -71,10 +73,10 @@ export async function GET(
         // MCQ specific
         selectedOptionText: a.selectedOption?.optionText || null,
         correctOptionText: a.question.type === "MULTIPLE_CHOICE"
-          ? a.question.options.find((o) => o.isCorrect)?.optionText || null
+          ? a.question.options.find((o: any) => o.isCorrect)?.optionText || null
           : null,
         explanation: a.question.type === "MULTIPLE_CHOICE"
-          ? a.question.options.find((o) => o.isCorrect)?.explanation || null
+          ? a.question.options.find((o: any) => o.isCorrect)?.explanation || null
           : null,
         // Coding specific
         submittedCode: a.submittedCode,
@@ -107,7 +109,7 @@ export async function GET(
         completedAt: menteeAssessment.completedAt,
         categoryBreakdown: categoryBreakdownArray,
         answers: detailedAnswers,
-        violations: menteeAssessment.violations.map((v) => ({
+        violations: menteeAssessment.violations.map((v: any) => ({
           type: v.violationType,
           timestamp: v.timestamp,
           details: v.details,

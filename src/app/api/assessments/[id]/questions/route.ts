@@ -73,9 +73,9 @@ export async function GET(
       select: { questionId: true, selectedOptionId: true, submittedCode: true, languageUsed: true },
     });
 
-    const answeredMap = new Map(answers.map((a) => [a.questionId, a]));
+    const answeredMap = new Map(answers.map((a: any) => [a.questionId, a]));
 
-    const result = shuffled.map((q, index) => ({
+    const result = shuffled.map((q: any, index: number) => ({
       ...q,
       order: index + 1,
       answered: answeredMap.has(q.id),

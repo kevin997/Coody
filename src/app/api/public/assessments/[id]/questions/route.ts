@@ -48,7 +48,7 @@ export async function GET(
       where: { assessmentId: id },
     });
 
-    const result = questions.map((q, index) => ({
+    const result = questions.map((q: any, index: number) => ({
       ...q,
       order: index + 1,
       answered: false,
