@@ -64,6 +64,19 @@ function resolveLanguage(lang: string): { language: string; version: string } {
   return { language: mapping.language, version: mapping.version };
 }
 
+// Piston sandbox doesn't expose /dev/stdin as a file.
+// This shim reads stdin via fd 0 and patches readFileSync so
+// require("fs").readFileSync("/dev/stdin", "utf8") works transparently.
+const JS_STDIN_SHIM = `(function(){var fs=require("fs"),d=[];try{var b=Buffer.alloc(4096),n;while((n=fs.readSync(0,b,0,b.length))>0)d.push(b.slice(0,n));}catch(e){}var c=Buffer.concat(d),o=fs.readFileSync;fs.readFileSync=function(p){var a=[].slice.call(arguments);if(p==="/dev/stdin"||p===0){var enc=typeof a[1]==="string"?a[1]:a[1]&&a[1].encoding;return enc?c.toString(enc):c;}return o.apply(this,a);};})();\n`;
+
+function wrapCode(language: string, code: string): string {
+  const lang = language.toLowerCase();
+  if (lang === 'javascript' || lang === 'typescript') {
+    return JS_STDIN_SHIM + code;
+  }
+  return code;
+}
+
 export async function executeCode(
   language: string,
   code: string,
@@ -71,11 +84,12 @@ export async function executeCode(
 ): Promise<{ stdout: string; stderr: string; exitCode: number; compileError?: string }> {
   const { language: pistonLang, version } = resolveLanguage(language);
   const mapping = LANGUAGE_MAP[language.toLowerCase()] || { extension: 'txt' };
+  const wrappedCode = wrapCode(language, code);
 
   const body: PistonExecuteRequest = {
     language: pistonLang,
     version,
-    files: [{ name: `main.${mapping.extension}`, content: code }],
+    files: [{ name: `main.${mapping.extension}`, content: wrappedCode }],
     stdin: stdin || '',
     run_timeout: 10000,
     compile_timeout: 30000,
