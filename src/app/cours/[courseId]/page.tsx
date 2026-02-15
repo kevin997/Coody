@@ -306,7 +306,7 @@ export default function CoursePage() {
                     <Badge variant="secondary">{currentSection.duration}</Badge>
                   )}
                   {isCompleted && (
-                    <Badge variant="default" className="bg-green-500">
+                    <Badge variant="default" className="bg-success text-success-foreground">
                       <CheckCircle2 className="mr-1 h-3 w-3" />
                       Complété
                     </Badge>

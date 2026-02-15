@@ -47,13 +47,13 @@ export function MarkdownRenderer({ content, className = '' }: MarkdownRendererPr
           code: ({ node, inline, className, children, ...props }: any) => {
             const match = /language-(\w+)/.exec(className || '');
             return !inline ? (
-              <pre className="my-4 p-4 rounded-lg bg-slate-900 overflow-x-auto">
+              <pre className="my-4 p-4 rounded-lg bg-code-bg text-code-foreground overflow-x-auto">
                 <code className={className} {...props}>
                   {children}
                 </code>
               </pre>
             ) : (
-              <code className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-sm font-mono" {...props}>
+              <code className="px-1.5 py-0.5 rounded bg-muted text-sm font-mono" {...props}>
                 {children}
               </code>
             );
@@ -63,14 +63,14 @@ export function MarkdownRenderer({ content, className = '' }: MarkdownRendererPr
           ),
           table: ({ node, ...props }) => (
             <div className="my-4 overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-300" {...props} />
+              <table className="min-w-full divide-y divide-border" {...props} />
             </div>
           ),
           thead: ({ node, ...props }) => (
-            <thead className="bg-slate-50 dark:bg-slate-800" {...props} />
+            <thead className="bg-muted" {...props} />
           ),
           tr: ({ node, ...props }) => (
-            <tr className="border-b border-gray-200" {...props} />
+            <tr className="border-b border-border" {...props} />
           ),
           th: ({ node, ...props }) => (
             <th className="px-4 py-2 text-left font-semibold" {...props} />
@@ -82,7 +82,7 @@ export function MarkdownRenderer({ content, className = '' }: MarkdownRendererPr
             <a className="text-primary hover:underline font-medium" {...props} />
           ),
           hr: ({ node, ...props }) => (
-            <hr className="my-8 border-t-2 border-gray-200 dark:border-gray-700" {...props} />
+            <hr className="my-8 border-t-2 border-border" {...props} />
           ),
         }}
       >

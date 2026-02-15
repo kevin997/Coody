@@ -74,7 +74,7 @@ export function NotebookViewer({ notebook, className = '' }: NotebookViewerProps
           </div>
         </CardHeader>
         <CardContent>
-          <pre className="p-4 bg-slate-900 text-slate-100 rounded-md overflow-x-auto">
+          <pre className="p-4 bg-code-bg text-code-foreground rounded-md overflow-x-auto">
             <code className="language-python">
               {cell.source.join('')}
             </code>
@@ -84,7 +84,7 @@ export function NotebookViewer({ notebook, className = '' }: NotebookViewerProps
           {(cell.outputs && cell.outputs.length > 0) || isExecuted ? (
             <div className="mt-4">
               <div className="text-sm font-medium mb-2">Sortie:</div>
-              <div className="p-4 bg-slate-50 dark:bg-slate-800 rounded-md">
+              <div className="p-4 bg-muted rounded-md">
                 {isExecuted ? (
                   <div className="text-sm text-muted-foreground">
                     ⚠️ L'exécution de code en temps réel sera disponible prochainement.

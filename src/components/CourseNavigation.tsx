@@ -77,7 +77,7 @@ export function CourseNavigation({
                     <div className="flex items-center gap-3 w-full">
                       <div className="flex-shrink-0">
                         {isModuleComplete ? (
-                          <CheckCircle2 className="w-5 h-5 text-green-500" />
+                          <CheckCircle2 className="w-5 h-5 text-success" />
                         ) : (
                           <Circle className="w-5 h-5 text-muted-foreground" />
                         )}
@@ -114,7 +114,7 @@ export function CourseNavigation({
                                 {isLocked ? (
                                   <Lock className="w-4 h-4 text-muted-foreground" />
                                 ) : isCompleted ? (
-                                  <CheckCircle2 className="w-4 h-4 text-green-500" />
+                                  <CheckCircle2 className="w-4 h-4 text-success" />
                                 ) : (
                                   <Circle className="w-4 h-4 text-muted-foreground" />
                                 )}
