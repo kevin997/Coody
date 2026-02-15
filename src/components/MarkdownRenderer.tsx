@@ -15,7 +15,7 @@ interface MarkdownRendererProps {
 
 export function MarkdownRenderer({ content, className = '' }: MarkdownRendererProps) {
   return (
-    <Card className={`p-6 prose prose-slate dark:prose-invert max-w-none ${className}`}>
+    <Card className={`p-4 md:p-6 prose prose-slate dark:prose-invert max-w-none overflow-x-hidden ${className}`}>
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[rehypeHighlight, rehypeRaw]}
@@ -63,7 +63,7 @@ export function MarkdownRenderer({ content, className = '' }: MarkdownRendererPr
           ),
           table: ({ node, ...props }) => (
             <div className="my-4 overflow-x-auto">
-              <table className="min-w-full divide-y divide-border" {...props} />
+              <table className="w-full divide-y divide-border" {...props} />
             </div>
           ),
           thead: ({ node, ...props }) => (

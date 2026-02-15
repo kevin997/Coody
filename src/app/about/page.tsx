@@ -1,13 +1,16 @@
+'use client';
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { 
-  Code, 
-  Database, 
-  GraduationCap, 
-  Heart, 
-  Lightbulb, 
+import { useLocale } from '@/providers/locale-provider';
+import {
+  Code,
+  Database,
+  GraduationCap,
+  Heart,
+  Lightbulb,
   Rocket,
   Target,
   Users,
@@ -20,19 +23,19 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 export default function AboutPage() {
+  const { t } = useLocale();
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted">
       {/* Hero Section */}
       <section className="container px-4 py-16 md:py-24">
         <div className="mx-auto max-w-4xl text-center">
-          <Badge className="mb-4" variant="secondary">À propos de Coody</Badge>
-          <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">
-            Apprendre à coder,<br />
-            <span className="text-primary">simplement et efficacement</span>
+          <Badge className="mb-4" variant="secondary">{t.about.badge}</Badge>
+          <h1 className="text-3xl md:text-6xl font-bold tracking-tight mb-6">
+            {t.about.heroTitle1}<br />
+            <span className="text-primary">{t.about.heroTitle2}</span>
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Coody est une plateforme d'apprentissage interactive créée pour rendre 
-            la programmation accessible à tous, peu importe votre niveau.
+            {t.about.heroSubtitle}
           </p>
         </div>
       </section>
@@ -44,12 +47,11 @@ export default function AboutPage() {
             <Card>
               <CardHeader>
                 <Target className="h-10 w-10 text-primary mb-2" />
-                <CardTitle>Notre Mission</CardTitle>
+                <CardTitle>{t.about.ourMission}</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground">
-                  Démocratiser l'apprentissage de la programmation en offrant 
-                  des cours de qualité, interactifs et adaptés à tous les niveaux.
+                  {t.about.ourMissionDesc}
                 </p>
               </CardContent>
             </Card>
@@ -57,12 +59,11 @@ export default function AboutPage() {
             <Card>
               <CardHeader>
                 <Lightbulb className="h-10 w-10 text-accent mb-2" />
-                <CardTitle>Notre Vision</CardTitle>
+                <CardTitle>{t.about.ourVision}</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground">
-                  Devenir la référence francophone de l'apprentissage en ligne 
-                  pour la programmation, l'analyse de données et le développement web.
+                  {t.about.ourVisionDesc}
                 </p>
               </CardContent>
             </Card>
@@ -70,12 +71,11 @@ export default function AboutPage() {
             <Card>
               <CardHeader>
                 <Heart className="h-10 w-10 text-success mb-2" />
-                <CardTitle>Nos Valeurs</CardTitle>
+                <CardTitle>{t.about.ourValues}</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground">
-                  Accessibilité, qualité pédagogique, innovation et engagement 
-                  envers la réussite de chaque apprenant.
+                  {t.about.ourValuesDesc}
                 </p>
               </CardContent>
             </Card>
@@ -88,7 +88,7 @@ export default function AboutPage() {
         <div className="mx-auto max-w-4xl">
           <Card className="overflow-hidden">
             <div className="md:flex">
-              <div className="md:w-1/3 bg-gradient-to-br from-primary to-secondary p-8 flex items-center justify-center relative overflow-hidden">
+              <div className="md:w-1/3 bg-gradient-to-br from-primary to-secondary p-4 md:p-8 flex items-center justify-center relative overflow-hidden">
                 <div className="relative w-full h-64 md:h-full min-h-[300px]">
                   <Image
                     src="/photo-de-ovanga-liboire-kevin-en-salle-de-formation.jpg"
@@ -99,48 +99,42 @@ export default function AboutPage() {
                   />
                 </div>
               </div>
-              <div className="md:w-2/3 p-8">
-                <Badge className="mb-4">Fondateur & Créateur</Badge>
-                <h2 className="text-3xl font-bold mb-2"><a href="https://www.linkedin.com/in/ovanga-liboire-kevin-titan/">Ovanga Liboire Kevin</a></h2>
+              <div className="md:w-2/3 p-4 md:p-8">
+                <Badge className="mb-4">{t.about.founderBadge}</Badge>
+                <h2 className="text-2xl md:text-3xl font-bold mb-2"><a href="https://www.linkedin.com/in/ovanga-liboire-kevin-titan/">Ovanga Liboire Kevin</a></h2>
                 <p className="text-muted-foreground mb-6">
-                  Développeur autodidacte · Data Analyst · Entrepreneur
+                  {t.about.founderSubtitle}
                 </p>
 
                 <div className="space-y-4">
                   <p className="text-muted-foreground">
-                    Développeur autodidacte passionné et analyste de données, Kevin est le créateur 
-                    de <strong>Coody</strong>, une plateforme d'apprentissage interactive pour 
-                    la programmation et l'analyse de données.
+                    {t.about.founderBio1}
                   </p>
 
                   <p className="text-muted-foreground">
-                    En tant que co-fondateur de <a href="https://kursa.csl-brands.com">KURSA</a> et <a href="https://csl-brands.com">CSL Brands</a>, 
-                    Kevin a développé une expertise dans la création de solutions innovantes et 
-                    évolutives pour les entreprises en ligne.
+                    {t.about.founderBio2}
                   </p>
 
                   <p className="text-muted-foreground">
-                    Sa mission avec Coody est de partager ses connaissances et de rendre 
-                    l'apprentissage de la programmation accessible à tous, en combinant 
-                    pédagogie de qualité et outils technologiques modernes.
+                    {t.about.founderBio3}
                   </p>
 
                   <div className="flex flex-wrap gap-2 pt-4">
                     <Badge variant="secondary">
                       <Code className="h-3 w-3 mr-1" />
-                      Développement Full-Stack
+                      {t.about.fullStackDev}
                     </Badge>
                     <Badge variant="secondary">
                       <Database className="h-3 w-3 mr-1" />
-                      Analyse de Données
+                      {t.about.dataAnalysis}
                     </Badge>
                     <Badge variant="secondary">
                       <Rocket className="h-3 w-3 mr-1" />
-                      Entrepreneuriat
+                      {t.about.entrepreneurship}
                     </Badge>
                     <Badge variant="secondary">
                       <GraduationCap className="h-3 w-3 mr-1" />
-                      Pédagogie
+                      {t.about.pedagogy}
                     </Badge>
                   </div>
                 </div>
@@ -154,19 +148,18 @@ export default function AboutPage() {
       <section className="container px-4 pb-16">
         <div className="mx-auto max-w-4xl">
           <h2 className="text-3xl font-bold text-center mb-12">
-            Pourquoi choisir Coody?
+            {t.about.whyCoody}
           </h2>
 
           <div className="grid md:grid-cols-2 gap-6">
             <Card>
               <CardHeader>
                 <BookOpen className="h-8 w-8 text-primary mb-2" />
-                <CardTitle>Contenu de Qualité</CardTitle>
+                <CardTitle>{t.about.qualityContent}</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground">
-                  Des cours structurés et progressifs, créés par des experts 
-                  avec une approche pédagogique éprouvée.
+                  {t.about.qualityContentDesc}
                 </p>
               </CardContent>
             </Card>
@@ -174,12 +167,11 @@ export default function AboutPage() {
             <Card>
               <CardHeader>
                 <Code className="h-8 w-8 text-primary mb-2" />
-                <CardTitle>Pratique Interactive</CardTitle>
+                <CardTitle>{t.about.interactivePractice}</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground">
-                  Apprenez en codant directement avec des notebooks Jupyter 
-                  intégrés et des exercices pratiques.
+                  {t.about.interactivePracticeDesc}
                 </p>
               </CardContent>
             </Card>
@@ -187,12 +179,11 @@ export default function AboutPage() {
             <Card>
               <CardHeader>
                 <Users className="h-8 w-8 text-primary mb-2" />
-                <CardTitle>Suivi Personnalisé</CardTitle>
+                <CardTitle>{t.about.personalizedTracking}</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground">
-                  Suivez votre progression, prenez des notes et reprenez 
-                  là où vous vous êtes arrêté.
+                  {t.about.personalizedTrackingDesc}
                 </p>
               </CardContent>
             </Card>
@@ -200,12 +191,11 @@ export default function AboutPage() {
             <Card>
               <CardHeader>
                 <Globe className="h-8 w-8 text-primary mb-2" />
-                <CardTitle>Accessible Partout</CardTitle>
+                <CardTitle>{t.about.accessibleEverywhere}</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground">
-                  Apprenez à votre rythme, sur n'importe quel appareil, 
-                  où que vous soyez.
+                  {t.about.accessibleEverywhereDesc}
                 </p>
               </CardContent>
             </Card>
@@ -218,22 +208,22 @@ export default function AboutPage() {
         <div className="mx-auto max-w-4xl">
           <Card className="bg-gradient-to-r from-primary to-secondary text-primary-foreground">
             <CardContent className="py-12">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 text-center">
                 <div>
-                  <div className="text-4xl font-bold mb-2">100%</div>
-                  <div className="text-sm opacity-90">Gratuit pour commencer</div>
+                  <div className="text-2xl md:text-4xl font-bold mb-2">100%</div>
+                  <div className="text-sm opacity-90">{t.about.freeToStart}</div>
                 </div>
                 <div>
-                  <div className="text-4xl font-bold mb-2">∞</div>
-                  <div className="text-sm opacity-90">Apprentissage illimité</div>
+                  <div className="text-2xl md:text-4xl font-bold mb-2">∞</div>
+                  <div className="text-sm opacity-90">{t.about.unlimitedLearning}</div>
                 </div>
                 <div>
-                  <div className="text-4xl font-bold mb-2">24/7</div>
-                  <div className="text-sm opacity-90">Accessible en ligne</div>
+                  <div className="text-2xl md:text-4xl font-bold mb-2">24/7</div>
+                  <div className="text-sm opacity-90">{t.about.accessibleOnline}</div>
                 </div>
                 <div>
-                  <div className="text-4xl font-bold mb-2">🇫🇷</div>
-                  <div className="text-sm opacity-90">Contenu en français</div>
+                  <div className="text-2xl md:text-4xl font-bold mb-2">�</div>
+                  <div className="text-sm opacity-90">{t.about.contentInFrench}</div>
                 </div>
               </div>
             </CardContent>
@@ -245,7 +235,7 @@ export default function AboutPage() {
       <section className="container px-4 pb-16">
         <div className="mx-auto max-w-4xl">
           <h2 className="text-3xl font-bold text-center mb-8">
-            Technologies enseignées
+            {t.about.technologiesTaught}
           </h2>
           <Card>
             <CardContent className="pt-6">
@@ -255,9 +245,9 @@ export default function AboutPage() {
                 <Badge className="text-base py-2 px-4">Pandas</Badge>
                 <Badge className="text-base py-2 px-4">NumPy</Badge>
                 <Badge className="text-base py-2 px-4">Matplotlib</Badge>
-                <Badge className="text-base py-2 px-4">Analyse Financière</Badge>
+                <Badge className="text-base py-2 px-4">{t.about.financialAnalysis}</Badge>
                 <Badge className="text-base py-2 px-4">Data Science</Badge>
-                <Badge className="text-base py-2 px-4">Et plus encore...</Badge>
+                <Badge className="text-base py-2 px-4">{t.about.andMore}</Badge>
               </div>
             </CardContent>
           </Card>
@@ -268,13 +258,13 @@ export default function AboutPage() {
       <section className="container px-4 pb-16">
         <div className="mx-auto max-w-4xl">
           <h2 className="text-3xl font-bold text-center mb-8">
-            Contactez-moi
+            {t.about.contactMe}
           </h2>
           <Card>
             <CardContent className="py-8">
               <div className="grid md:grid-cols-2 gap-6">
                 {/* Email */}
-                <a 
+                <a
                   href="mailto:kevinliboire@gmail.com"
                   className="flex items-center gap-4 p-6 rounded-lg border border-border hover:border-primary hover:bg-muted/50 transition-all group"
                 >
@@ -290,7 +280,7 @@ export default function AboutPage() {
                 </a>
 
                 {/* WhatsApp */}
-                <a 
+                <a
                   href="https://wa.me/237680170569"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -309,7 +299,7 @@ export default function AboutPage() {
               </div>
 
               <p className="text-center text-muted-foreground mt-8">
-                N'hésitez pas à me contacter pour toute question ou suggestion concernant Coody!
+                {t.about.contactDesc}
               </p>
             </CardContent>
           </Card>
@@ -322,22 +312,21 @@ export default function AboutPage() {
           <Card className="border-2 border-primary">
             <CardHeader>
               <CardTitle className="text-2xl">
-                Prêt à commencer votre apprentissage?
+                {t.about.readyToLearn}
               </CardTitle>
               <CardDescription className="text-base">
-                Rejoignez Coody aujourd'hui et commencez votre parcours 
-                dans le monde de la programmation et de l'analyse de données.
+                {t.about.readyToLearnDesc}
               </CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" asChild>
                 <Link href="/inscription">
-                  Créer un compte gratuit
+                  {t.about.createFreeAccount}
                 </Link>
               </Button>
               <Button size="lg" variant="outline" asChild>
                 <Link href="/parcours">
-                  Explorer les cours
+                  {t.about.exploreCourses}
                 </Link>
               </Button>
             </CardContent>

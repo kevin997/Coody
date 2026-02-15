@@ -2,6 +2,7 @@
 
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { useLocale } from '@/providers/locale-provider';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -12,6 +13,7 @@ import Link from 'next/link';
 export default function ProfilePage() {
   const { data: session } = useSession();
   const router = useRouter();
+  const { t } = useLocale();
 
   if (!session?.user) {
     router.push('/connexion');
@@ -23,15 +25,15 @@ export default function ProfilePage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted">
       <div className="container max-w-4xl py-16 px-4">
-        <h1 className="text-4xl font-bold mb-8">Mon Profil</h1>
+        <h1 className="text-4xl font-bold mb-8">{t.profilePage.title}</h1>
 
         <div className="grid gap-6">
           {/* Profile Card */}
           <Card>
             <CardHeader>
-              <CardTitle>Informations du profil</CardTitle>
+              <CardTitle>{t.profilePage.profileInfo}</CardTitle>
               <CardDescription>
-                Vos informations personnelles et paramètres de compte
+                {t.profilePage.profileInfoDesc}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -49,9 +51,9 @@ export default function ProfilePage() {
                   <div>
                     <div className="flex items-center gap-2 text-muted-foreground mb-1">
                       <User className="h-4 w-4" />
-                      <span className="text-sm">Nom complet</span>
+                      <span className="text-sm">{t.profilePage.fullName}</span>
                     </div>
-                    <p className="text-lg font-medium">{user.name || 'Non défini'}</p>
+                    <p className="text-lg font-medium">{user.name || t.profilePage.notSet}</p>
                   </div>
 
                   <div>
@@ -59,16 +61,16 @@ export default function ProfilePage() {
                       <Mail className="h-4 w-4" />
                       <span className="text-sm">Email</span>
                     </div>
-                    <p className="text-lg">{user.email || 'Non défini'}</p>
+                    <p className="text-lg">{user.email || t.profilePage.notSet}</p>
                   </div>
 
                   <div>
                     <div className="flex items-center gap-2 text-muted-foreground mb-1">
                       <BookOpen className="h-4 w-4" />
-                      <span className="text-sm">Rôle</span>
+                      <span className="text-sm">{t.profilePage.role}</span>
                     </div>
                     <Badge variant="secondary" className="mt-1">
-                      {user.role === 'instructor' ? 'Instructeur' : 'Apprenant'}
+                      {user.role === 'instructor' ? t.nav.instructor : t.nav.learner}
                     </Badge>
                   </div>
                 </div>
@@ -76,10 +78,10 @@ export default function ProfilePage() {
 
               <div className="mt-6 flex gap-4">
                 <Button variant="outline" disabled>
-                  Modifier le profil (Bientôt disponible)
+                  {t.profilePage.editProfileSoon}
                 </Button>
                 <Button variant="outline" asChild>
-                  <Link href="/settings">Paramètres</Link>
+                  <Link href="/settings">{t.common.settings}</Link>
                 </Button>
               </div>
             </CardContent>
@@ -88,30 +90,30 @@ export default function ProfilePage() {
           {/* Stats Card */}
           <Card>
             <CardHeader>
-              <CardTitle>Statistiques d'apprentissage</CardTitle>
+              <CardTitle>{t.profilePage.learningStats}</CardTitle>
               <CardDescription>
-                Votre progression et activité
+                {t.profilePage.learningStatsDesc}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="text-center p-4 bg-muted rounded-lg">
                   <div className="text-3xl font-bold text-primary">0</div>
-                  <div className="text-sm text-muted-foreground mt-1">Cours commencés</div>
+                  <div className="text-sm text-muted-foreground mt-1">{t.profilePage.coursesStarted}</div>
                 </div>
                 <div className="text-center p-4 bg-muted rounded-lg">
                   <div className="text-3xl font-bold text-primary">0</div>
-                  <div className="text-sm text-muted-foreground mt-1">Sections complétées</div>
+                  <div className="text-sm text-muted-foreground mt-1">{t.profilePage.sectionsCompleted}</div>
                 </div>
                 <div className="text-center p-4 bg-muted rounded-lg">
                   <div className="text-3xl font-bold text-primary">0h</div>
-                  <div className="text-sm text-muted-foreground mt-1">Temps d'apprentissage</div>
+                  <div className="text-sm text-muted-foreground mt-1">{t.profilePage.learningTime}</div>
                 </div>
               </div>
 
               <div className="mt-6 text-center">
                 <Button asChild>
-                  <Link href="/mes-cours">Voir mes cours</Link>
+                  <Link href="/mes-cours">{t.profilePage.viewMyCourses}</Link>
                 </Button>
               </div>
             </CardContent>
@@ -120,15 +122,15 @@ export default function ProfilePage() {
           {/* Quick Actions */}
           <Card>
             <CardHeader>
-              <CardTitle>Actions rapides</CardTitle>
+              <CardTitle>{t.profilePage.quickActions}</CardTitle>
             </CardHeader>
             <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Button variant="outline" asChild className="h-auto py-4">
                 <Link href="/parcours">
                   <div className="text-left">
-                    <div className="font-semibold">Explorer les parcours</div>
+                    <div className="font-semibold">{t.profilePage.explorePaths}</div>
                     <div className="text-sm text-muted-foreground">
-                      Découvrez nos formations
+                      {t.profilePage.discoverTrainings}
                     </div>
                   </div>
                 </Link>
@@ -136,9 +138,9 @@ export default function ProfilePage() {
               <Button variant="outline" asChild className="h-auto py-4">
                 <Link href="/mes-cours">
                   <div className="text-left">
-                    <div className="font-semibold">Continuer l'apprentissage</div>
+                    <div className="font-semibold">{t.profilePage.continueLearning}</div>
                     <div className="text-sm text-muted-foreground">
-                      Reprendre là où vous vous êtes arrêté
+                      {t.profilePage.resumeWhereLeft}
                     </div>
                   </div>
                 </Link>

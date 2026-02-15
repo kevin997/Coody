@@ -20,6 +20,11 @@ export async function verifyTurnstileToken(
   token: string,
   ip?: string
 ): Promise<TurnstileVerifyResponse> {
+  // Skip verification in development
+  if (process.env.NODE_ENV === 'development') {
+    return { success: true };
+  }
+
   const secretKey = process.env.TURNSTILE_SECRET_KEY;
 
   if (!secretKey) {

@@ -1,0 +1,5 @@
+atlas@atlas-Latitude-E5440:~/Projects/CSL/Coody$ curl -s http://localhost:2000/api/v2/runtimes | head -5
+
+atlas@atlas-Latitude-E5440:~/Projects/CSL/Coody$ curl -s http://localhost:2000/api/v2/packages | python3 -c "import sys,json; pkgs=json.load(sys.stdin); langs={'python','javascript','java','c++','typescript'}; [print(f\"{p['language']} {p['language_version']}\") for p in pkgs if p['language'] in langs]" | head -20
+
+atlas@atlas-Latitude-E5440:~/Projects/CSL/Coody$ curl -sX POST http://localhost:2000/api/v2/packages -H 'Content-Type: application/json' -d '{"language":"python","version":"3.12.0"}'

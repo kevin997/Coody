@@ -312,13 +312,13 @@ export default function CoursePage() {
                     </Badge>
                   )}
                 </div>
-                <h1 className="text-3xl font-bold">{currentSection.title}</h1>
+                <h1 className="text-2xl md:text-3xl font-bold break-words">{currentSection.title}</h1>
               </div>
 
               {/* Content */}
               {isLoading ? (
                 <Card>
-                  <CardContent className="p-12 text-center">
+                  <CardContent className="p-6 md:p-12 text-center">
                     Chargement du contenu...
                   </CardContent>
                 </Card>
@@ -357,11 +357,12 @@ export default function CoursePage() {
               <Separator className="my-8" />
 
               {/* Navigation Buttons */}
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
                 <Button
                   variant="outline"
                   onClick={handlePrevious}
                   disabled={!getPreviousSection()}
+                  className="w-full sm:w-auto"
                 >
                   <ChevronLeft className="mr-2 h-4 w-4" />
                   Précédent
@@ -370,6 +371,7 @@ export default function CoursePage() {
                 <Button
                   variant={isCompleted ? "outline" : "default"}
                   onClick={handleCompleteSection}
+                  className="w-full sm:w-auto"
                 >
                   <CheckCircle2 className="mr-2 h-4 w-4" />
                   {isCompleted ? 'Complété' : 'Marquer comme complété'}
@@ -379,6 +381,7 @@ export default function CoursePage() {
                   variant="outline"
                   onClick={handleNext}
                   disabled={!getNextSection()}
+                  className="w-full sm:w-auto"
                 >
                   Suivant
                   <ChevronRight className="ml-2 h-4 w-4" />

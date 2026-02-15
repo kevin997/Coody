@@ -13,21 +13,79 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// ============================================================
+// ENUMS
+// ============================================================
+
+enum UserRole {
+  learner
+  instructor
+  mentee
+  admin
+}
+
+enum MenteeLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+  EXPERT
+}
+
+enum QuestionCategory {
+  DATA_STRUCTURES
+  ALGORITHMS
+  OOP
+  CRITICAL_THINKING
+  LOGICAL_REASONING
+}
+
+enum QuestionType {
+  MULTIPLE_CHOICE
+  CODING
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+enum ViolationType {
+  TAB_SWITCH
+  COPY_PASTE
+  RIGHT_CLICK
+  DEV_TOOLS
+  WINDOW_BLUR
+  FULLSCREEN_EXIT
+}
+
+// ============================================================
+// EXISTING MODELS (preserved)
+// ============================================================
+
 // User Model for Authentication
 model User {
-  id            String          @id @default(cuid())
-  email         String          @unique
-  name          String
-  password      String
-  role          String          @default("learner") // learner or instructor
-  avatar        String?
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
-  
+  id                    String       @id @default(cuid())
+  email                 String       @unique
+  name                  String
+  password              String
+  role                  UserRole     @default(learner)
+  avatar                String?
+  phone                 String?
+  level                 MenteeLevel?
+  totalScore            Float?
+  showOnLeaderboard     Boolean      @default(true)
+  assessmentCompleted   Boolean      @default(false)
+  assessmentCompletedAt DateTime?
+  createdAt             DateTime     @default(now())
+  updatedAt             DateTime     @updatedAt
+
   // Relations
-  courseProgress CourseProgress[]
-  courseNotes    CourseNote[]
-  
+  courseProgress     CourseProgress[]
+  courseNotes        CourseNote[]
+  menteeAssessments  MenteeAssessment[]
+  pathwayEnrollments PathwayEnrollment[]
+
   @@map("users")
 }
 
@@ -42,10 +100,10 @@ model CourseProgress {
   startedAt           DateTime @default(now())
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
-  
+
   // Relations
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
+
   @@unique([userId, courseId])
   @@map("course_progress")
 }
@@ -59,10 +117,218 @@ model CourseNote {
   content   String   @db.Text
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
+
   // Relations
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
+
   @@unique([userId, courseId, sectionId])
   @@map("course_notes")
+}
+
+// ============================================================
+// ASSESSMENT MODELS
+// ============================================================
+
+model Assessment {
+  id              String   @id @default(cuid())
+  title           String
+  titleEn         String? // English translation
+  description     String   @db.Text
+  descriptionEn   String?  @db.Text // English translation
+  durationMinutes Int      @default(120)
+  isActive        Boolean  @default(true)
+  maxViolations   Int      @default(5)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  questions          Question[]
+  menteeAssessments  MenteeAssessment[]
+  pathwayAssessments PathwayAssessment[]
+
+  @@map("assessments")
+}
+
+model Question {
+  id               String           @id @default(cuid())
+  assessmentId     String
+  category         QuestionCategory
+  subcategory      String
+  type             QuestionType
+  difficulty       Difficulty
+  points           Int              @default(10)
+  title            String
+  titleEn          String? // English translation
+  description      String           @db.Text
+  descriptionEn    String?          @db.Text // English translation
+  timeLimitSeconds Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  assessment      Assessment             @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  options         MultipleChoiceOption[]
+  codingChallenge CodingChallenge?
+  menteeAnswers   MenteeAnswer[]
+
+  @@map("questions")
+}
+
+model MultipleChoiceOption {
+  id            String  @id @default(cuid())
+  questionId    String
+  optionText    String  @db.Text
+  optionTextEn  String? @db.Text // English translation
+  isCorrect     Boolean @default(false)
+  explanation   String? @db.Text
+  explanationEn String? @db.Text // English translation
+  order         Int     @default(0)
+
+  // Relations
+  question      Question       @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  menteeAnswers MenteeAnswer[]
+
+  @@map("multiple_choice_options")
+}
+
+model CodingChallenge {
+  id                 String  @id @default(cuid())
+  questionId         String  @unique
+  starterCode        Json // {javascript: "", python: "", java: "", cpp: ""}
+  solutionCode       Json // {javascript: "", python: "", java: "", cpp: ""}
+  testCases          Json // [{input, expectedOutput, explanation, points}]
+  hiddenTestCases    Json // [{input, expectedOutput, explanation, points}]
+  hints              Json? // ["hint1", "hint2"]
+  hintsEn            Json? // English hints
+  constraints        String? @db.Text
+  constraintsEn      String? @db.Text // English translation
+  expectedComplexity Json? // {time: "O(n)", space: "O(1)"}
+
+  // Relations
+  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@map("coding_challenges")
+}
+
+model MenteeAssessment {
+  id               String       @id @default(cuid())
+  menteeId         String
+  assessmentId     String
+  startedAt        DateTime     @default(now())
+  completedAt      DateTime?
+  totalScore       Float?
+  maxScore         Float?
+  percentage       Float?
+  levelAssigned    MenteeLevel?
+  timeTakenSeconds Int?
+  violationsCount  Int          @default(0)
+  isDisqualified   Boolean      @default(false)
+  createdAt        DateTime     @default(now())
+
+  // Relations
+  mentee     User           @relation(fields: [menteeId], references: [id], onDelete: Cascade)
+  assessment Assessment     @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  answers    MenteeAnswer[]
+  violations ViolationLog[]
+
+  @@unique([menteeId, assessmentId])
+  @@map("mentee_assessments")
+}
+
+model MenteeAnswer {
+  id                 String   @id @default(cuid())
+  menteeAssessmentId String
+  questionId         String
+  selectedOptionId   String?
+  submittedCode      String?  @db.Text
+  languageUsed       String?
+  isCorrect          Boolean  @default(false)
+  pointsEarned       Float    @default(0)
+  timeSpentSeconds   Int      @default(0)
+  attemptsCount      Int      @default(1)
+  testCasesPassed    Int      @default(0)
+  testCasesTotal     Int      @default(0)
+  submittedAt        DateTime @default(now())
+
+  // Relations
+  menteeAssessment MenteeAssessment      @relation(fields: [menteeAssessmentId], references: [id], onDelete: Cascade)
+  question         Question              @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  selectedOption   MultipleChoiceOption? @relation(fields: [selectedOptionId], references: [id], onDelete: SetNull)
+
+  @@unique([menteeAssessmentId, questionId])
+  @@map("mentee_answers")
+}
+
+model ViolationLog {
+  id                 String        @id @default(cuid())
+  menteeAssessmentId String
+  violationType      ViolationType
+  details            Json?
+  timestamp          DateTime      @default(now())
+  createdAt          DateTime      @default(now())
+
+  // Relations
+  menteeAssessment MenteeAssessment @relation(fields: [menteeAssessmentId], references: [id], onDelete: Cascade)
+
+  @@map("violation_logs")
+}
+
+// ============================================================
+// PATHWAY MODELS
+// ============================================================
+
+model Pathway {
+  id            String   @id @default(cuid())
+  title         String
+  titleEn       String?
+  subtitle      String?  @db.Text
+  subtitleEn    String?  @db.Text
+  description   String   @db.Text
+  descriptionEn String?  @db.Text
+  icon          String? // lucide icon name e.g. "GraduationCap"
+  color         String? // tailwind color e.g. "blue", "purple"
+  image         String? // optional hero image URL
+  level         String   @default("beginner") // beginner, intermediate, advanced
+  duration      String? // e.g. "10-12 weeks"
+  isActive      Boolean  @default(true)
+  isPublished   Boolean  @default(true)
+  order         Int      @default(0) // display order in slides/listings
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  assessments PathwayAssessment[]
+  enrollments PathwayEnrollment[]
+
+  @@map("pathways")
+}
+
+model PathwayAssessment {
+  id           String @id @default(cuid())
+  pathwayId    String
+  assessmentId String
+  order        Int    @default(0)
+
+  // Relations
+  pathway    Pathway    @relation(fields: [pathwayId], references: [id], onDelete: Cascade)
+  assessment Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+
+  @@unique([pathwayId, assessmentId])
+  @@map("pathway_assessments")
+}
+
+model PathwayEnrollment {
+  id          String    @id @default(cuid())
+  userId      String
+  pathwayId   String
+  enrolledAt  DateTime  @default(now())
+  completedAt DateTime?
+
+  // Relations
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  pathway Pathway @relation(fields: [pathwayId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, pathwayId])
+  @@map("pathway_enrollments")
 }

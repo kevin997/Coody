@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
+import { useLocale } from '@/providers/locale-provider';
 import Link from 'next/link';
 import { Turnstile } from '@marsidev/react-turnstile';
 import { Button } from '@/components/ui/button';
@@ -10,10 +11,12 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { BookOpen, Loader2, Shield } from 'lucide-react';
+import { Loader2, Shield } from 'lucide-react';
+import Image from 'next/image';
 
 export default function InscriptionPage() {
   const router = useRouter();
+  const { t } = useLocale();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [turnstileToken, setTurnstileToken] = useState<string>('');
@@ -30,23 +33,23 @@ export default function InscriptionPage() {
 
     // Validation
     if (!formData.name || !formData.email || !formData.password) {
-      setError('Tous les champs sont requis');
+      setError(t.auth.allFieldsRequired);
       return;
     }
 
     if (formData.password !== formData.confirmPassword) {
-      setError('Les mots de passe ne correspondent pas');
+      setError(t.auth.passwordsDontMatch);
       return;
     }
 
     if (formData.password.length < 6) {
-      setError('Le mot de passe doit contenir au moins 6 caractères');
+      setError(t.auth.passwordMinLength);
       return;
     }
 
     // Verify CAPTCHA (in production)
     if (process.env.NODE_ENV === 'production' && !turnstileToken) {
-      setError('Veuillez compléter la vérification de sécurité');
+      setError(t.auth.captchaRequired);
       return;
     }
 
@@ -81,7 +84,7 @@ export default function InscriptionPage() {
       });
 
       if (result?.error) {
-        setError('Inscription réussie mais échec de la connexion automatique');
+        setError(t.auth.registerAutoLoginFailed);
         router.push('/connexion');
       } else {
         router.push('/parcours');
@@ -98,13 +101,17 @@ export default function InscriptionPage() {
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
           <div className="flex items-center justify-center mb-4">
-            <div className="flex items-center justify-center w-12 h-12 bg-primary rounded-lg">
-              <BookOpen className="h-6 w-6 text-primary-foreground" />
-            </div>
+            <Image
+              src="/coody-logo.svg"
+              alt="Coody"
+              width={48}
+              height={48}
+              className="rounded-lg"
+            />
           </div>
-          <CardTitle className="text-2xl text-center">Créer un compte</CardTitle>
+          <CardTitle className="text-2xl text-center">{t.auth.registerTitle}</CardTitle>
           <CardDescription className="text-center">
-            Inscrivez-vous pour commencer votre apprentissage
+            {t.auth.registerDescription}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -116,7 +123,7 @@ export default function InscriptionPage() {
             )}
 
             <div className="space-y-2">
-              <Label htmlFor="name">Nom complet</Label>
+              <Label htmlFor="name">{t.auth.fullName}</Label>
               <Input
                 id="name"
                 type="text"
@@ -129,7 +136,7 @@ export default function InscriptionPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">{t.auth.email}</Label>
               <Input
                 id="email"
                 type="email"
@@ -142,7 +149,7 @@ export default function InscriptionPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password">Mot de passe</Label>
+              <Label htmlFor="password">{t.auth.password}</Label>
               <Input
                 id="password"
                 type="password"
@@ -155,7 +162,7 @@ export default function InscriptionPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirmer le mot de passe</Label>
+              <Label htmlFor="confirmPassword">{t.auth.confirmPassword}</Label>
               <Input
                 id="confirmPassword"
                 type="password"
@@ -167,17 +174,17 @@ export default function InscriptionPage() {
               />
             </div>
 
-            {/* Cloudflare Turnstile CAPTCHA */}
-            {process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && (
+            {/* Cloudflare Turnstile CAPTCHA - disabled in development */}
+            {process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && (
               <div className="flex flex-col items-center space-y-2">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Shield className="h-4 w-4" />
-                  <span>Protection contre les robots</span>
+                  <span>{t.auth.botProtection}</span>
                 </div>
                 <Turnstile
                   siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
                   onSuccess={setTurnstileToken}
-                  onError={() => setError('Erreur de vérification de sécurité')}
+                  onError={() => setError(t.auth.captchaError)}
                   onExpire={() => setTurnstileToken('')}
                   options={{
                     theme: 'light',
@@ -187,32 +194,32 @@ export default function InscriptionPage() {
               </div>
             )}
 
-            <Button 
-              type="submit" 
-              className="w-full" 
-              disabled={isLoading || (!!process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && !turnstileToken)}
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={isLoading || (process.env.NODE_ENV === 'production' && !!process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && !turnstileToken)}
             >
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Inscription en cours...
+                  {t.auth.registering}
                 </>
               ) : (
-                "S'inscrire"
+                t.auth.registerButton
               )}
             </Button>
           </form>
         </CardContent>
         <CardFooter className="flex flex-col space-y-4">
           <div className="text-sm text-center text-muted-foreground">
-            Vous avez déjà un compte?{' '}
+            {t.auth.hasAccount}{' '}
             <Link href="/connexion" className="text-primary hover:underline">
-              Se connecter
+              {t.auth.loginButton}
             </Link>
           </div>
           <div className="text-sm text-center text-muted-foreground">
             <Link href="/" className="hover:underline">
-              Retour à l'accueil
+              {t.common.backToHome}
             </Link>
           </div>
         </CardFooter>

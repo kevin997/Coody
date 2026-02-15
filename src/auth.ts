@@ -41,16 +41,25 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           name: user.name,
           role: user.role,
           avatar: user.avatar,
+          level: user.level,
+          assessmentCompleted: user.assessmentCompleted,
         };
       },
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
       if (user) {
         token.id = user.id;
         token.role = (user as any).role;
         token.avatar = (user as any).avatar;
+        token.level = (user as any).level;
+        token.assessmentCompleted = (user as any).assessmentCompleted;
+      }
+      // Allow updating session from client
+      if (trigger === "update" && session) {
+        if (session.level) token.level = session.level;
+        if (session.assessmentCompleted !== undefined) token.assessmentCompleted = session.assessmentCompleted;
       }
       return token;
     },
@@ -59,6 +68,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         session.user.id = token.id as string;
         session.user.role = token.role as string;
         session.user.avatar = token.avatar as string | null;
+        session.user.level = token.level as string | null;
+        session.user.assessmentCompleted = token.assessmentCompleted as boolean;
       }
       return session;
     },

@@ -2,6 +2,7 @@
 
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { useLocale } from '@/providers/locale-provider';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -12,6 +13,7 @@ import { Bell, Lock, Palette, Globe, Shield, User } from 'lucide-react';
 export default function SettingsPage() {
   const { data: session } = useSession();
   const router = useRouter();
+  const { t, locale, setLocale } = useLocale();
 
   if (!session?.user) {
     router.push('/connexion');
@@ -21,9 +23,9 @@ export default function SettingsPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted">
       <div className="container max-w-4xl py-16 px-4">
-        <h1 className="text-4xl font-bold mb-2">Paramètres</h1>
+        <h1 className="text-4xl font-bold mb-2">{t.settingsPage.title}</h1>
         <p className="text-muted-foreground mb-8">
-          Gérez vos préférences et paramètres de compte
+          {t.settingsPage.subtitle}
         </p>
 
         <div className="grid gap-6">
@@ -32,10 +34,10 @@ export default function SettingsPage() {
             <CardHeader>
               <div className="flex items-center gap-2">
                 <User className="h-5 w-5" />
-                <CardTitle>Compte</CardTitle>
+                <CardTitle>{t.settingsPage.account}</CardTitle>
               </div>
               <CardDescription>
-                Gérez vos informations de compte
+                {t.settingsPage.accountDesc}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -45,17 +47,17 @@ export default function SettingsPage() {
                   <p className="text-sm text-muted-foreground">{session.user.email}</p>
                 </div>
                 <Button variant="outline" size="sm" disabled>
-                  Modifier
+                  {t.settingsPage.edit}
                 </Button>
               </div>
               <Separator />
               <div className="flex items-center justify-between">
                 <div>
-                  <Label>Mot de passe</Label>
+                  <Label>{t.auth.password}</Label>
                   <p className="text-sm text-muted-foreground">••••••••</p>
                 </div>
                 <Button variant="outline" size="sm" disabled>
-                  Changer
+                  {t.settingsPage.change}
                 </Button>
               </div>
             </CardContent>
@@ -66,18 +68,18 @@ export default function SettingsPage() {
             <CardHeader>
               <div className="flex items-center gap-2">
                 <Bell className="h-5 w-5" />
-                <CardTitle>Notifications</CardTitle>
+                <CardTitle>{t.settingsPage.notifications}</CardTitle>
               </div>
               <CardDescription>
-                Configurez vos préférences de notification
+                {t.settingsPage.notificationsDesc}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label>Notifications par email</Label>
+                  <Label>{t.settingsPage.emailNotifications}</Label>
                   <p className="text-sm text-muted-foreground">
-                    Recevoir des notifications sur les nouveaux cours
+                    {t.settingsPage.emailNotificationsDesc}
                   </p>
                 </div>
                 <Switch disabled />
@@ -85,9 +87,9 @@ export default function SettingsPage() {
               <Separator />
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label>Rappels de cours</Label>
+                  <Label>{t.settingsPage.courseReminders}</Label>
                   <p className="text-sm text-muted-foreground">
-                    Recevoir des rappels pour continuer votre apprentissage
+                    {t.settingsPage.courseRemindersDesc}
                   </p>
                 </div>
                 <Switch disabled />
@@ -95,9 +97,9 @@ export default function SettingsPage() {
               <Separator />
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label>Annonces</Label>
+                  <Label>{t.settingsPage.announcements}</Label>
                   <p className="text-sm text-muted-foreground">
-                    Recevoir des annonces sur les nouvelles fonctionnalités
+                    {t.settingsPage.announcementsDesc}
                   </p>
                 </div>
                 <Switch disabled />
@@ -110,18 +112,18 @@ export default function SettingsPage() {
             <CardHeader>
               <div className="flex items-center gap-2">
                 <Palette className="h-5 w-5" />
-                <CardTitle>Apparence</CardTitle>
+                <CardTitle>{t.settingsPage.appearance}</CardTitle>
               </div>
               <CardDescription>
-                Personnalisez l'apparence de l'application
+                {t.settingsPage.appearanceDesc}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label>Mode sombre</Label>
+                  <Label>{t.settingsPage.darkMode}</Label>
                   <p className="text-sm text-muted-foreground">
-                    Basculer entre les thèmes clair et sombre
+                    {t.settingsPage.darkModeDesc}
                   </p>
                 </div>
                 <Switch disabled />
@@ -129,13 +131,13 @@ export default function SettingsPage() {
               <Separator />
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label>Taille de police</Label>
+                  <Label>{t.settingsPage.fontSize}</Label>
                   <p className="text-sm text-muted-foreground">
-                    Ajuster la taille du texte
+                    {t.settingsPage.fontSizeDesc}
                   </p>
                 </div>
                 <Button variant="outline" size="sm" disabled>
-                  Moyen
+                  {t.settingsPage.medium}
                 </Button>
               </div>
             </CardContent>
@@ -146,30 +148,30 @@ export default function SettingsPage() {
             <CardHeader>
               <div className="flex items-center gap-2">
                 <Globe className="h-5 w-5" />
-                <CardTitle>Langue et région</CardTitle>
+                <CardTitle>{t.settingsPage.languageRegion}</CardTitle>
               </div>
               <CardDescription>
-                Définissez vos préférences de langue et de région
+                {t.settingsPage.languageRegionDesc}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label>Langue</Label>
+                  <Label>{t.settingsPage.displayLanguage}</Label>
                   <p className="text-sm text-muted-foreground">
-                    Langue d'affichage de l'interface
+                    {t.settingsPage.displayLanguageDesc}
                   </p>
                 </div>
-                <Button variant="outline" size="sm" disabled>
-                  Français
+                <Button variant="outline" size="sm" onClick={() => setLocale(locale === 'fr' ? 'en' : 'fr')}>
+                  {locale === 'fr' ? 'Français' : 'English'}
                 </Button>
               </div>
               <Separator />
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label>Fuseau horaire</Label>
+                  <Label>{t.settingsPage.timezone}</Label>
                   <p className="text-sm text-muted-foreground">
-                    Votre fuseau horaire local
+                    {t.settingsPage.timezoneDesc}
                   </p>
                 </div>
                 <Button variant="outline" size="sm" disabled>
@@ -184,18 +186,18 @@ export default function SettingsPage() {
             <CardHeader>
               <div className="flex items-center gap-2">
                 <Shield className="h-5 w-5" />
-                <CardTitle>Confidentialité et sécurité</CardTitle>
+                <CardTitle>{t.settingsPage.privacySecurity}</CardTitle>
               </div>
               <CardDescription>
-                Gérez vos paramètres de confidentialité et de sécurité
+                {t.settingsPage.privacySecurityDesc}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label>Profil public</Label>
+                  <Label>{t.settingsPage.publicProfile}</Label>
                   <p className="text-sm text-muted-foreground">
-                    Rendre votre profil visible aux autres utilisateurs
+                    {t.settingsPage.publicProfileDesc}
                   </p>
                 </div>
                 <Switch disabled />
@@ -203,25 +205,25 @@ export default function SettingsPage() {
               <Separator />
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label>Authentification à deux facteurs</Label>
+                  <Label>{t.settingsPage.twoFactor}</Label>
                   <p className="text-sm text-muted-foreground">
-                    Ajouter une couche de sécurité supplémentaire
+                    {t.settingsPage.twoFactorDesc}
                   </p>
                 </div>
                 <Button variant="outline" size="sm" disabled>
-                  Activer
+                  {t.settingsPage.enable}
                 </Button>
               </div>
               <Separator />
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label>Sessions actives</Label>
+                  <Label>{t.settingsPage.activeSessions}</Label>
                   <p className="text-sm text-muted-foreground">
-                    Gérer vos sessions de connexion
+                    {t.settingsPage.activeSessionsDesc}
                   </p>
                 </div>
                 <Button variant="outline" size="sm" disabled>
-                  Voir
+                  {t.settingsPage.view}
                 </Button>
               </div>
             </CardContent>
@@ -232,22 +234,22 @@ export default function SettingsPage() {
             <CardHeader>
               <div className="flex items-center gap-2">
                 <Lock className="h-5 w-5 text-destructive" />
-                <CardTitle className="text-destructive">Zone de danger</CardTitle>
+                <CardTitle className="text-destructive">{t.settingsPage.dangerZone}</CardTitle>
               </div>
               <CardDescription>
-                Actions irréversibles sur votre compte
+                {t.settingsPage.dangerZoneDesc}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label>Supprimer le compte</Label>
+                  <Label>{t.settingsPage.deleteAccount}</Label>
                   <p className="text-sm text-muted-foreground">
-                    Supprimer définitivement votre compte et toutes vos données
+                    {t.settingsPage.deleteAccountDesc}
                   </p>
                 </div>
                 <Button variant="destructive" size="sm" disabled>
-                  Supprimer
+                  {t.settingsPage.delete}
                 </Button>
               </div>
             </CardContent>
@@ -257,7 +259,7 @@ export default function SettingsPage() {
           <Card className="bg-muted">
             <CardContent className="pt-6">
               <p className="text-sm text-muted-foreground text-center">
-                💡 <strong>Note:</strong> La plupart des fonctionnalités de paramètres seront disponibles dans une prochaine mise à jour.
+                💡 <strong>Note:</strong> {t.settingsPage.settingsNote}
               </p>
             </CardContent>
           </Card>

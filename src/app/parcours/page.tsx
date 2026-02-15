@@ -1,12 +1,101 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
+import { useLocale } from '@/providers/locale-provider';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { BookOpen, Clock, TrendingUp, Target, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
+import {
+  BookOpen,
+  Clock,
+  TrendingUp,
+  Target,
+  ArrowRight,
+  CheckCircle2,
+  GraduationCap,
+  Code,
+  Rocket,
+  Users,
+  Loader2,
+} from 'lucide-react';
 import { loadAllCourses } from '@/lib/courseLoader';
+import { toast } from 'sonner';
+
+const iconMap: Record<string, React.ElementType> = {
+  GraduationCap, TrendingUp, BookOpen, Code, Target, Rocket,
+};
+
+interface PathwayData {
+  id: string;
+  title: string;
+  titleEn?: string;
+  subtitle?: string;
+  subtitleEn?: string;
+  description: string;
+  descriptionEn?: string;
+  icon?: string;
+  color?: string;
+  level: string;
+  duration?: string;
+  enrollmentCount: number;
+  assessments: {
+    id: string;
+    title: string;
+    titleEn?: string;
+    questionCount: number;
+    durationMinutes: number;
+  }[];
+}
 
 export default function ParcoursPage() {
+  const { t, locale } = useLocale();
+  const { status } = useSession();
   const courses = loadAllCourses();
+  const [pathways, setPathways] = useState<PathwayData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [enrollingId, setEnrollingId] = useState<string | null>(null);
+  const [enrolledIds, setEnrolledIds] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    fetch('/api/pathways')
+      .then((r) => r.json())
+      .then((data) => { if (data.pathways) setPathways(data.pathways); })
+      .catch(() => { })
+      .finally(() => setLoading(false));
+  }, []);
+
+  useEffect(() => {
+    if (status !== 'authenticated') return;
+    fetch('/api/pathways/enrolled')
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.enrollments) {
+          setEnrolledIds(new Set(data.enrollments.map((e: any) => e.pathway.id)));
+        }
+      })
+      .catch(() => { });
+  }, [status]);
+
+  async function handleEnroll(pathwayId: string) {
+    if (status !== 'authenticated') return;
+    setEnrollingId(pathwayId);
+    try {
+      const res = await fetch(`/api/pathways/${pathwayId}/enroll`, { method: 'POST' });
+      if (res.ok) {
+        setEnrolledIds((prev) => new Set([...prev, pathwayId]));
+        toast.success(locale === 'fr' ? 'Inscription réussie !' : 'Successfully enrolled!');
+      }
+    } catch { } finally {
+      setEnrollingId(null);
+    }
+  }
+
+  function loc(fr?: string | null, en?: string | null) {
+    return locale === 'en' && en ? en : fr || '';
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted">
@@ -15,187 +104,120 @@ export default function ParcoursPage() {
         <div className="mx-auto max-w-4xl text-center">
           <Badge className="mb-4" variant="secondary">
             <Target className="mr-2 h-3 w-3" />
-            Parcours d'Apprentissage
+            {t.parcours.badge}
           </Badge>
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl mb-6">
-            Choisissez Votre Parcours
+            {t.parcours.heroTitle}
           </h1>
           <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Des parcours structurés pour vous accompagner de débutant à expert.
-            Chaque parcours comprend des cours, des exercices pratiques et des projets concrets.
+            {t.parcours.heroSubtitle}
           </p>
         </div>
       </section>
 
-      {/* Career Paths */}
+      {/* Pathways from DB */}
       <section className="container px-4 pb-16">
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 max-w-7xl mx-auto">
-          {/* Python & Finance Path */}
-          <Card className="flex flex-col">
-            <CardHeader>
-              <div className="mb-4 flex items-center justify-between">
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
-                  <TrendingUp className="h-6 w-6 text-primary" />
-                </div>
-                <Badge>Débutant</Badge>
-              </div>
-              <CardTitle className="text-2xl">Python & Finance</CardTitle>
-              <CardDescription>
-                Devenez analyste financier en maîtrisant Python et SQL
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="flex-1">
-              <div className="space-y-4">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Clock className="h-4 w-4" />
-                  <span>10-12 semaines</span>
-                </div>
-                <div className="space-y-2">
-                  <h4 className="font-medium text-sm">Ce que vous apprendrez:</h4>
-                  <ul className="space-y-1 text-sm text-muted-foreground">
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                      <span>Programmation Python de A à Z</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                      <span>Gestion de bases de données avec SQL</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                      <span>Analyse de données financières</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                      <span>Visualisation et reporting</span>
-                    </li>
-                  </ul>
-                </div>
-                <div className="pt-2">
-                  <Badge variant="outline" className="mr-2">Python</Badge>
-                  <Badge variant="outline" className="mr-2">SQL</Badge>
-                  <Badge variant="outline">Finance</Badge>
-                </div>
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button className="w-full" asChild>
-                <Link href="/cours/python-sql-finance">
-                  Commencer ce parcours
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
-            </CardFooter>
-          </Card>
+          {loading ? (
+            [1, 2, 3].map((i) => <Skeleton key={i} className="h-80 rounded-xl" />)
+          ) : (
+            pathways.map((pw) => {
+              const Icon = iconMap[pw.icon || 'BookOpen'] || BookOpen;
+              const isEnrolled = enrolledIds.has(pw.id);
+              const hasAssessments = pw.assessments.length > 0;
+              const levelLabels: Record<string, string> = {
+                all: locale === 'fr' ? 'Tous niveaux' : 'All levels',
+                beginner: locale === 'fr' ? 'Débutant' : 'Beginner',
+                intermediate: locale === 'fr' ? 'Intermédiaire' : 'Intermediate',
+                advanced: locale === 'fr' ? 'Avancé' : 'Advanced',
+              };
 
-          {/* Data Analysis Path - Coming Soon */}
-          <Card className="flex flex-col opacity-60">
-            <CardHeader>
-              <div className="mb-4 flex items-center justify-between">
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-secondary">
-                  <BookOpen className="h-6 w-6 text-muted-foreground" />
-                </div>
-                <Badge variant="secondary">Bientôt</Badge>
-              </div>
-              <CardTitle className="text-2xl">Data Science</CardTitle>
-              <CardDescription>
-                Machine Learning et Intelligence Artificielle pour la finance
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="flex-1">
-              <div className="space-y-4">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Clock className="h-4 w-4" />
-                  <span>14-16 semaines</span>
-                </div>
-                <div className="space-y-2">
-                  <h4 className="font-medium text-sm">Ce que vous apprendrez:</h4>
-                  <ul className="space-y-1 text-sm text-muted-foreground">
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
-                      <span>Statistiques et probabilités</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
-                      <span>Machine Learning appliqué</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
-                      <span>Prédiction de marchés</span>
-                    </li>
-                  </ul>
-                </div>
-                <div className="pt-2">
-                  <Badge variant="outline" className="mr-2">Python</Badge>
-                  <Badge variant="outline" className="mr-2">ML</Badge>
-                  <Badge variant="outline">AI</Badge>
-                </div>
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button className="w-full" disabled>
-                Bientôt disponible
-              </Button>
-            </CardFooter>
-          </Card>
-
-          {/* Trading Algorithms - Coming Soon */}
-          <Card className="flex flex-col opacity-60">
-            <CardHeader>
-              <div className="mb-4 flex items-center justify-between">
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-secondary">
-                  <Target className="h-6 w-6 text-muted-foreground" />
-                </div>
-                <Badge variant="secondary">Bientôt</Badge>
-              </div>
-              <CardTitle className="text-2xl">Trading Algorithmique</CardTitle>
-              <CardDescription>
-                Créez vos propres algorithmes de trading automatisé
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="flex-1">
-              <div className="space-y-4">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Clock className="h-4 w-4" />
-                  <span>12-14 semaines</span>
-                </div>
-                <div className="space-y-2">
-                  <h4 className="font-medium text-sm">Ce que vous apprendrez:</h4>
-                  <ul className="space-y-1 text-sm text-muted-foreground">
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
-                      <span>Stratégies de trading</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
-                      <span>Backtesting et optimisation</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
-                      <span>Gestion des risques</span>
-                    </li>
-                  </ul>
-                </div>
-                <div className="pt-2">
-                  <Badge variant="outline" className="mr-2">Python</Badge>
-                  <Badge variant="outline" className="mr-2">APIs</Badge>
-                  <Badge variant="outline">Trading</Badge>
-                </div>
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button className="w-full" disabled>
-                Bientôt disponible
-              </Button>
-            </CardFooter>
-          </Card>
+              return (
+                <Card key={pw.id} className="flex flex-col">
+                  <CardHeader>
+                    <div className="mb-4 flex items-center justify-between">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
+                        <Icon className="h-6 w-6 text-primary" />
+                      </div>
+                      <Badge>{levelLabels[pw.level] || pw.level}</Badge>
+                    </div>
+                    <CardTitle className="text-2xl">{loc(pw.title, pw.titleEn)}</CardTitle>
+                    <CardDescription>
+                      {loc(pw.subtitle, pw.subtitleEn) || loc(pw.description, pw.descriptionEn)}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="flex-1">
+                    <div className="space-y-4">
+                      {pw.duration && (
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <Clock className="h-4 w-4" />
+                          <span>{pw.duration}</span>
+                        </div>
+                      )}
+                      {pw.enrollmentCount > 0 && (
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <Users className="h-4 w-4" />
+                          <span>{pw.enrollmentCount} {locale === 'fr' ? 'inscrits' : 'enrolled'}</span>
+                        </div>
+                      )}
+                      {hasAssessments && (
+                        <div className="space-y-2">
+                          <h4 className="font-medium text-sm">{locale === 'fr' ? 'Évaluations incluses:' : 'Included assessments:'}</h4>
+                          <ul className="space-y-1 text-sm text-muted-foreground">
+                            {pw.assessments.map((a) => (
+                              <li key={a.id} className="flex items-start gap-2">
+                                <CheckCircle2 className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                                <span>{loc(a.title, a.titleEn)} ({a.questionCount} questions, {a.durationMinutes} min)</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  </CardContent>
+                  <CardFooter className="gap-2">
+                    {hasAssessments ? (
+                      <Button className="flex-1" asChild>
+                        <Link href={`/assessment/${pw.assessments[0].id}`}>
+                          {locale === 'fr' ? 'Commencer l\'évaluation' : 'Start assessment'}
+                          <ArrowRight className="ml-2 h-4 w-4" />
+                        </Link>
+                      </Button>
+                    ) : (
+                      <Button className="flex-1" variant="outline" disabled>
+                        {t.parcours.comingSoonButton}
+                      </Button>
+                    )}
+                    {status === 'authenticated' && !isEnrolled && (
+                      <Button
+                        variant="outline"
+                        onClick={() => handleEnroll(pw.id)}
+                        disabled={enrollingId === pw.id}
+                      >
+                        {enrollingId === pw.id ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          locale === 'fr' ? "S'inscrire" : 'Enroll'
+                        )}
+                      </Button>
+                    )}
+                    {isEnrolled && (
+                      <Badge variant="secondary" className="ml-2">
+                        {locale === 'fr' ? 'Inscrit' : 'Enrolled'}
+                      </Badge>
+                    )}
+                  </CardFooter>
+                </Card>
+              );
+            })
+          )}
         </div>
       </section>
 
       {/* All Courses Section */}
       <section className="container px-4 pb-16">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl font-bold mb-8">Cours Disponibles</h2>
+          <h2 className="text-3xl font-bold mb-8">{t.parcours.availableCourses}</h2>
           <div className="grid gap-6 md:grid-cols-2">
             {courses.map((course) => (
               <Card key={course.id}>
@@ -219,14 +241,14 @@ export default function ParcoursPage() {
                       </div>
                     </div>
                     <div className="text-sm text-muted-foreground">
-                      Par {course.instructor}
+                      {t.parcours.by} {course.instructor}
                     </div>
                   </div>
                 </CardContent>
                 <CardFooter>
                   <Button className="w-full" asChild>
                     <Link href={`/cours/${course.id}`}>
-                      Voir le cours
+                      {t.parcours.viewCourse}
                       <ArrowRight className="ml-2 h-4 w-4" />
                     </Link>
                   </Button>
@@ -240,16 +262,16 @@ export default function ParcoursPage() {
       {/* CTA Section */}
       <section className="container px-4 pb-16">
         <Card className="bg-primary text-primary-foreground max-w-4xl mx-auto">
-          <CardContent className="p-12 text-center">
+          <CardContent className="p-6 md:p-12 text-center">
             <h2 className="text-3xl font-bold mb-4">
-              Prêt à transformer votre carrière ?
+              {t.parcours.readyToTransform}
             </h2>
             <p className="text-lg mb-8 opacity-90">
-              Commencez votre apprentissage dès aujourd'hui avec nos parcours structurés
+              {t.parcours.readyToTransformDesc}
             </p>
             <Button size="lg" variant="secondary" asChild>
               <Link href="/cours/python-sql-finance">
-                Commencer maintenant
+                {t.home.startNow}
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>

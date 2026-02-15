@@ -6,12 +6,16 @@ declare module "next-auth" {
       id: string;
       role: string;
       avatar: string | null;
+      level: string | null;
+      assessmentCompleted: boolean;
     } & DefaultSession["user"];
   }
 
   interface User {
     role: string;
     avatar: string | null;
+    level: string | null;
+    assessmentCompleted: boolean;
   }
 }
 
@@ -20,5 +24,7 @@ declare module "next-auth/jwt" {
     id: string;
     role: string;
     avatar: string | null;
+    level: string | null;
+    assessmentCompleted: boolean;
   }
 }

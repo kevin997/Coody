@@ -7,7 +7,7 @@ import { verifyTurnstileToken, getClientIp } from "@/lib/turnstile";
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { email, name, password, role = "learner", turnstileToken } = body;
+    const { email, name, password, role = "mentee", phone, turnstileToken } = body;
 
     // Validation
     if (!email || !name || !password) {
@@ -52,13 +52,18 @@ export async function POST(request: NextRequest) {
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // Validate role
+    const validRoles = ['learner', 'mentee'];
+    const userRole = validRoles.includes(role) ? role : 'mentee';
+
     // Create user
     const user = await prisma.user.create({
       data: {
         email,
         name,
         password: hashedPassword,
-        role,
+        role: userRole,
+        phone: phone || null,
       },
     });
 
