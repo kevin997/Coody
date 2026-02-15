@@ -237,11 +237,22 @@ export default function AssessmentDetailPage() {
 
           {/* Action Button */}
           {!isGuest && assessment.isCompleted ? (
-            <Button className="w-full" size="lg" asChild>
-              <Link href={`/assessment/${id}/results`}>
-                {t.assessment.viewResults}
-              </Link>
-            </Button>
+            <div className="flex gap-3">
+              <Button className="flex-1" size="lg" asChild>
+                <Link href={`/assessment/${id}/results`}>
+                  {t.assessment.viewResults}
+                </Link>
+              </Button>
+              <Button
+                className="flex-1"
+                size="lg"
+                variant="outline"
+                onClick={() => setShowStartDialog(true)}
+              >
+                <PlayCircle className="mr-2 h-5 w-5" />
+                {t.assessment.retake}
+              </Button>
+            </div>
           ) : (
             <Button
               className="w-full"

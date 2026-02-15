@@ -26,15 +26,24 @@ export async function POST(
       where: { menteeId_assessmentId: { menteeId: user.id, assessmentId: id } },
     });
 
-    if (existing?.completedAt) {
-      return badRequest("Vous avez déjà complété cette évaluation");
-    }
-
-    // If already started but not completed, return existing
-    if (existing) {
+    // If already started but not completed, return existing (resume)
+    if (existing && !existing.completedAt) {
       return NextResponse.json({
         menteeAssessment: existing,
         message: "Évaluation déjà en cours",
+      });
+    }
+
+    // If completed, allow retake: delete old attempt + answers + violations
+    if (existing?.completedAt) {
+      await prisma.menteeAnswer.deleteMany({
+        where: { menteeAssessmentId: existing.id },
+      });
+      await prisma.violationLog.deleteMany({
+        where: { menteeAssessmentId: existing.id },
+      });
+      await prisma.menteeAssessment.delete({
+        where: { id: existing.id },
       });
     }
 

@@ -86,6 +86,7 @@ export interface Dictionary {
     noAssessmentsDesc: string;
     completed: string;
     viewResults: string;
+    retake: string;
     resume: string;
     start: string;
     tryFree: string;

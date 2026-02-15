@@ -39,12 +39,12 @@ interface PistonExecuteResponse {
 
 // Map friendly language names to Piston language identifiers
 const LANGUAGE_MAP: Record<string, { language: string; version: string; extension: string }> = {
-  javascript: { language: 'javascript', version: '*', extension: 'js' },
-  python: { language: 'python', version: '3', extension: 'py' },
-  java: { language: 'java', version: '*', extension: 'java' },
-  cpp: { language: 'c++', version: '*', extension: 'cpp' },
-  c: { language: 'c', version: '*', extension: 'c' },
-  typescript: { language: 'typescript', version: '*', extension: 'ts' },
+  javascript: { language: 'javascript', version: '20.11.1', extension: 'js' },
+  python: { language: 'python', version: '3.12.0', extension: 'py' },
+  java: { language: 'java', version: '15.0.2', extension: 'java' },
+  cpp: { language: 'c++', version: '10.2.0', extension: 'cpp' },
+  c: { language: 'c', version: '10.2.0', extension: 'c' },
+  typescript: { language: 'typescript', version: '5.0.3', extension: 'ts' },
 };
 
 let cachedRuntimes: PistonRuntime[] | null = null;
@@ -58,21 +58,10 @@ export async function getRuntimes(): Promise<PistonRuntime[]> {
   return cachedRuntimes!;
 }
 
-async function resolveLanguage(lang: string): Promise<{ language: string; version: string }> {
+function resolveLanguage(lang: string): { language: string; version: string } {
   const mapping = LANGUAGE_MAP[lang.toLowerCase()];
-  if (!mapping) throw new Error(`Unsupported language: ${lang}`);
-
-  const runtimes = await getRuntimes();
-  const runtime = runtimes.find(
-    (r) =>
-      r.language === mapping.language ||
-      r.aliases.includes(mapping.language) ||
-      r.aliases.includes(lang.toLowerCase())
-  );
-
-  if (!runtime) throw new Error(`Runtime not found for language: ${lang}`);
-
-  return { language: runtime.language, version: runtime.version };
+  if (!mapping) throw new Error(`Unsupported language: ${lang}. Supported: ${Object.keys(LANGUAGE_MAP).join(', ')}`);
+  return { language: mapping.language, version: mapping.version };
 }
 
 export async function executeCode(
@@ -80,7 +69,7 @@ export async function executeCode(
   code: string,
   stdin?: string
 ): Promise<{ stdout: string; stderr: string; exitCode: number; compileError?: string }> {
-  const { language: pistonLang, version } = await resolveLanguage(language);
+  const { language: pistonLang, version } = resolveLanguage(language);
   const mapping = LANGUAGE_MAP[language.toLowerCase()] || { extension: 'txt' };
 
   const body: PistonExecuteRequest = {

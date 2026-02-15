@@ -86,6 +86,7 @@ export const fr: Dictionary = {
     noAssessmentsDesc: 'Les évaluations seront bientôt disponibles.',
     completed: 'Terminée',
     viewResults: 'Voir les résultats',
+    retake: 'Reprendre l\'évaluation',
     resume: 'Reprendre',
     start: 'Commencer',
     tryFree: 'Essayer gratuitement',

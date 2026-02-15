@@ -80,6 +80,10 @@ export async function GET(
       order: index + 1,
       answered: answeredMap.has(q.id),
       previousAnswer: answeredMap.get(q.id) || null,
+      // Shuffle MCQ options per question (seeded by question id + assessment id for consistency)
+      options: q.options?.length > 0
+        ? shuffleWithSeed(q.options, menteeAssessment.id + q.id)
+        : q.options,
     }));
 
     return NextResponse.json({

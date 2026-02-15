@@ -86,6 +86,7 @@ export const en: Dictionary = {
     noAssessmentsDesc: 'Assessments will be available soon.',
     completed: 'Completed',
     viewResults: 'View results',
+    retake: 'Retake assessment',
     resume: 'Resume',
     start: 'Start',
     tryFree: 'Try for free',
