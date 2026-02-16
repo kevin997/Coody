@@ -476,36 +476,41 @@ export default function AssessmentTakePage() {
             {/* MCQ Options */}
             {currentQ.type === 'MULTIPLE_CHOICE' && currentQ.options && (
               <div className="space-y-4">
-                <RadioGroup value={selectedOption} onValueChange={setSelectedOption}>
+                <RadioGroup value={selectedOption} onValueChange={setSelectedOption} disabled={!!answerFeedback}>
                   {currentQ.options.map((opt) => (
                     <div
                       key={opt.id}
                       className={`flex items-start gap-3 p-4 border rounded-lg cursor-pointer transition-colors ${selectedOption === opt.id ? 'border-primary bg-primary/5' : 'hover:bg-muted/50'
-                        } ${answerFeedback?.correctOptionId === opt.id
-                          ? 'border-green-500 bg-green-50 dark:bg-green-950/20'
-                          : answerFeedback && selectedOption === opt.id && !answerFeedback.isCorrect
-                            ? 'border-red-500 bg-red-50 dark:bg-red-950/20'
-                            : ''
+                        } ${answerFeedback && selectedOption === opt.id
+                          ? answerFeedback.isCorrect
+                            ? 'border-green-500 bg-green-50 dark:bg-green-950/20'
+                            : 'border-red-500 bg-red-50 dark:bg-red-950/20'
+                          : ''
                         }`}
                     >
                       <RadioGroupItem value={opt.id} id={opt.id} className="mt-0.5" />
                       <Label htmlFor={opt.id} className="cursor-pointer flex-1 text-sm leading-relaxed">
                         {opt.optionText}
                       </Label>
-                      {answerFeedback?.correctOptionId === opt.id && (
-                        <CheckCircle2 className="h-5 w-5 text-green-600 shrink-0" />
-                      )}
-                      {answerFeedback && selectedOption === opt.id && !answerFeedback.isCorrect && (
-                        <XCircle className="h-5 w-5 text-red-600 shrink-0" />
+                      {answerFeedback && selectedOption === opt.id && (
+                        answerFeedback.isCorrect
+                          ? <CheckCircle2 className="h-5 w-5 text-green-600 shrink-0" />
+                          : <XCircle className="h-5 w-5 text-red-600 shrink-0" />
                       )}
                     </div>
                   ))}
                 </RadioGroup>
 
-                {answerFeedback?.explanation && (
-                  <Alert>
-                    <CheckCircle2 className="h-4 w-4" />
-                    <AlertDescription>{answerFeedback.explanation}</AlertDescription>
+                {answerFeedback && (
+                  <Alert variant={answerFeedback.isCorrect ? 'default' : 'destructive'}>
+                    {answerFeedback.isCorrect
+                      ? <CheckCircle2 className="h-4 w-4" />
+                      : <XCircle className="h-4 w-4" />}
+                    <AlertDescription>
+                      {answerFeedback.isCorrect
+                        ? (t.take.correctAnswer || 'Bonne réponse !')
+                        : (t.take.wrongAnswer || 'Mauvaise réponse. Vous ne pouvez pas modifier votre choix.')}
+                    </AlertDescription>
                   </Alert>
                 )}
               </div>

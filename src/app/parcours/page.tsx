@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useLocale } from '@/providers/locale-provider';
 import { Button } from '@/components/ui/button';
@@ -53,6 +54,7 @@ interface PathwayData {
 export default function ParcoursPage() {
   const { t, locale } = useLocale();
   const { status } = useSession();
+  const router = useRouter();
   const courses = loadAllCourses();
   const [pathways, setPathways] = useState<PathwayData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -86,7 +88,12 @@ export default function ParcoursPage() {
       const res = await fetch(`/api/pathways/${pathwayId}/enroll`, { method: 'POST' });
       if (res.ok) {
         setEnrolledIds((prev) => new Set([...prev, pathwayId]));
-        toast.success(locale === 'fr' ? 'Inscription réussie !' : 'Successfully enrolled!');
+        toast.success(locale === 'fr' ? 'Inscription réussie ! Redirection...' : 'Enrolled! Redirecting...');
+        // Navigate to the first assessment in the pathway
+        const pw = pathways.find((p) => p.id === pathwayId);
+        if (pw?.assessments?.[0]) {
+          router.push(`/assessment/${pw.assessments[0].id}`);
+        }
       }
     } catch { } finally {
       setEnrollingId(null);
@@ -175,36 +182,47 @@ export default function ParcoursPage() {
                       )}
                     </div>
                   </CardContent>
-                  <CardFooter className="gap-2">
+                  <CardFooter className="flex-col gap-3">
                     {hasAssessments ? (
-                      <Button className="flex-1" asChild>
-                        <Link href={`/assessment/${pw.assessments[0].id}`}>
-                          {locale === 'fr' ? 'Commencer l\'évaluation' : 'Start assessment'}
-                          <ArrowRight className="ml-2 h-4 w-4" />
-                        </Link>
-                      </Button>
+                      isEnrolled ? (
+                        <div className="w-full space-y-2">
+                          <div className="flex items-center gap-2 text-sm text-green-600 font-medium">
+                            <CheckCircle2 className="h-4 w-4" />
+                            {locale === 'fr' ? 'Inscrit à ce parcours' : 'Enrolled in this pathway'}
+                          </div>
+                          <Button className="w-full" asChild>
+                            <Link href={`/assessment/${pw.assessments[0].id}`}>
+                              {locale === 'fr' ? 'Continuer le parcours' : 'Continue pathway'}
+                              <ArrowRight className="ml-2 h-4 w-4" />
+                            </Link>
+                          </Button>
+                        </div>
+                      ) : status === 'authenticated' ? (
+                        <Button
+                          className="w-full"
+                          size="lg"
+                          onClick={() => handleEnroll(pw.id)}
+                          disabled={enrollingId === pw.id}
+                        >
+                          {enrollingId === pw.id ? (
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          ) : (
+                            <Rocket className="mr-2 h-4 w-4" />
+                          )}
+                          {locale === 'fr' ? "S'inscrire et commencer" : 'Enroll & start'}
+                        </Button>
+                      ) : (
+                        <Button className="w-full" size="lg" asChild>
+                          <Link href={`/assessment/${pw.assessments[0].id}`}>
+                            {locale === 'fr' ? 'Essayer gratuitement' : 'Try for free'}
+                            <ArrowRight className="ml-2 h-4 w-4" />
+                          </Link>
+                        </Button>
+                      )
                     ) : (
-                      <Button className="flex-1" variant="outline" disabled>
+                      <Button className="w-full" variant="outline" disabled>
                         {t.parcours.comingSoonButton}
                       </Button>
-                    )}
-                    {status === 'authenticated' && !isEnrolled && (
-                      <Button
-                        variant="outline"
-                        onClick={() => handleEnroll(pw.id)}
-                        disabled={enrollingId === pw.id}
-                      >
-                        {enrollingId === pw.id ? (
-                          <Loader2 className="h-4 w-4 animate-spin" />
-                        ) : (
-                          locale === 'fr' ? "S'inscrire" : 'Enroll'
-                        )}
-                      </Button>
-                    )}
-                    {isEnrolled && (
-                      <Badge variant="secondary" className="ml-2">
-                        {locale === 'fr' ? 'Inscrit' : 'Enrolled'}
-                      </Badge>
                     )}
                   </CardFooter>
                 </Card>

@@ -70,14 +70,10 @@ export async function GET(
         pointsEarned: a.pointsEarned,
         isCorrect: a.isCorrect,
         timeSpentSeconds: a.timeSpentSeconds,
-        // MCQ specific
+        // MCQ specific — only show user's own answer, NOT the correct one (anti-cheat)
         selectedOptionText: a.selectedOption?.optionText || null,
-        correctOptionText: a.question.type === "MULTIPLE_CHOICE"
-          ? a.question.options.find((o: any) => o.isCorrect)?.optionText || null
-          : null,
-        explanation: a.question.type === "MULTIPLE_CHOICE"
-          ? a.question.options.find((o: any) => o.isCorrect)?.explanation || null
-          : null,
+        correctOptionText: null,
+        explanation: null,
         // Coding specific
         submittedCode: a.submittedCode,
         languageUsed: a.languageUsed,

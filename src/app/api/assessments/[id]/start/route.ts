@@ -34,8 +34,18 @@ export async function POST(
       });
     }
 
-    // If completed, allow retake: delete old attempt + answers + violations
+    // If completed, allow retake with cooldown
     if (existing?.completedAt) {
+      // Enforce 24-hour cooldown between attempts to discourage answer memorization
+      const RETAKE_COOLDOWN_MS = 24 * 60 * 60 * 1000; // 24 hours
+      const timeSinceCompletion = Date.now() - existing.completedAt.getTime();
+      if (timeSinceCompletion < RETAKE_COOLDOWN_MS) {
+        const hoursRemaining = Math.ceil((RETAKE_COOLDOWN_MS - timeSinceCompletion) / (60 * 60 * 1000));
+        return badRequest(
+          `Vous devez attendre ${hoursRemaining}h avant de repasser cette évaluation. / You must wait ${hoursRemaining}h before retaking this assessment.`
+        );
+      }
+
       await prisma.menteeAnswer.deleteMany({
         where: { menteeAssessmentId: existing.id },
       });
@@ -44,6 +54,19 @@ export async function POST(
       });
       await prisma.menteeAssessment.delete({
         where: { id: existing.id },
+      });
+    }
+
+    // Auto-enroll in any pathway that contains this assessment
+    const pathwayAssessments = await prisma.pathwayAssessment.findMany({
+      where: { assessmentId: id },
+      select: { pathwayId: true },
+    });
+    for (const pa of pathwayAssessments) {
+      await prisma.pathwayEnrollment.upsert({
+        where: { userId_pathwayId: { userId: user.id, pathwayId: pa.pathwayId } },
+        update: {},
+        create: { userId: user.id, pathwayId: pa.pathwayId },
       });
     }
 

@@ -254,10 +254,11 @@ export default function ResultsPage() {
                           {a.selectedOptionText && (
                             <p>{locale === 'fr' ? 'Votre réponse' : 'Your answer'}: <span className={a.isCorrect ? 'text-green-600' : 'text-red-600'}>{a.selectedOptionText}</span></p>
                           )}
-                          {!a.isCorrect && a.correctOptionText && (
-                            <p>{locale === 'fr' ? 'Réponse correcte' : 'Correct answer'}: <span className="text-green-600">{a.correctOptionText}</span></p>
+                          {!a.isCorrect && (
+                            <p className="text-muted-foreground italic">
+                              {locale === 'fr' ? 'Réponse incorrecte' : 'Incorrect answer'}
+                            </p>
                           )}
-                          {a.explanation && <p className="text-muted-foreground italic mt-1">{a.explanation}</p>}
                         </div>
                       )}
                       {a.questionType === 'CODING' && (

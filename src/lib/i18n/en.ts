@@ -164,6 +164,8 @@ export const en: Dictionary = {
     easy: 'Easy',
     medium: 'Medium',
     hard: 'Hard',
+    correctAnswer: 'Correct answer!',
+    wrongAnswer: 'Incorrect answer. You cannot change your choice.',
     answeredFeedback: 'Answer saved',
   },
   leaderboard: {

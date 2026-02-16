@@ -77,7 +77,22 @@ export async function POST(
       }
     }
 
-    // Upsert the answer (allow updating before final submit)
+    // Check if answer already exists
+    const existingAnswer = await prisma.menteeAnswer.findUnique({
+      where: {
+        menteeAssessmentId_questionId: {
+          menteeAssessmentId: menteeAssessment.id,
+          questionId,
+        },
+      },
+    });
+
+    // For MCQ: lock answer after first submission to prevent trial-and-error
+    if (existingAnswer && question.type === "MULTIPLE_CHOICE") {
+      return badRequest("Vous avez déjà répondu à cette question (QCM). Impossible de modifier.");
+    }
+
+    // Upsert the answer (coding questions can be re-submitted)
     const answer = await prisma.menteeAnswer.upsert({
       where: {
         menteeAssessmentId_questionId: {
@@ -111,7 +126,8 @@ export async function POST(
       },
     });
 
-    // For MCQ, return whether the answer was correct (instant feedback)
+    // Return minimal feedback — NEVER leak correct answer ID or explanation
+    // This prevents users from memorizing answers for retakes
     const response: any = {
       success: true,
       answerId: answer.id,
@@ -121,10 +137,7 @@ export async function POST(
     if (question.type === "MULTIPLE_CHOICE") {
       response.isCorrect = isCorrect;
       response.pointsEarned = pointsEarned;
-      // Find the correct option to show explanation
-      const correctOption = question.options.find((o: any) => o.isCorrect);
-      response.correctOptionId = correctOption?.id;
-      response.explanation = correctOption?.explanation;
+      // DO NOT return correctOptionId or explanation — anti-cheat measure
     }
 
     return NextResponse.json(response);

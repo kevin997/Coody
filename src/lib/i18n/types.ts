@@ -164,6 +164,8 @@ export interface Dictionary {
     easy: string;
     medium: string;
     hard: string;
+    correctAnswer: string;
+    wrongAnswer: string;
     answeredFeedback: string;
   };
   leaderboard: {
