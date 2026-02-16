@@ -481,7 +481,7 @@ export default function AssessmentTakePage() {
                     <div
                       key={opt.id}
                       className={`flex items-start gap-3 p-4 border rounded-lg cursor-pointer transition-colors ${selectedOption === opt.id ? 'border-primary bg-primary/5' : 'hover:bg-muted/50'
-                        } ${answerFeedback && selectedOption === opt.id
+                        } ${answerFeedback && !answerFeedback.guestMode && selectedOption === opt.id
                           ? answerFeedback.isCorrect
                             ? 'border-green-500 bg-green-50 dark:bg-green-950/20'
                             : 'border-red-500 bg-red-50 dark:bg-red-950/20'
@@ -492,7 +492,7 @@ export default function AssessmentTakePage() {
                       <Label htmlFor={opt.id} className="cursor-pointer flex-1 text-sm leading-relaxed">
                         {opt.optionText}
                       </Label>
-                      {answerFeedback && selectedOption === opt.id && (
+                      {answerFeedback && !answerFeedback.guestMode && selectedOption === opt.id && (
                         answerFeedback.isCorrect
                           ? <CheckCircle2 className="h-5 w-5 text-green-600 shrink-0" />
                           : <XCircle className="h-5 w-5 text-red-600 shrink-0" />
@@ -502,16 +502,25 @@ export default function AssessmentTakePage() {
                 </RadioGroup>
 
                 {answerFeedback && (
-                  <Alert variant={answerFeedback.isCorrect ? 'default' : 'destructive'}>
-                    {answerFeedback.isCorrect
-                      ? <CheckCircle2 className="h-4 w-4" />
-                      : <XCircle className="h-4 w-4" />}
-                    <AlertDescription>
+                  answerFeedback.guestMode ? (
+                    <Alert>
+                      <CheckCircle2 className="h-4 w-4" />
+                      <AlertDescription>
+                        {t.take.answeredFeedback || 'Réponse enregistrée'}
+                      </AlertDescription>
+                    </Alert>
+                  ) : (
+                    <Alert variant={answerFeedback.isCorrect ? 'default' : 'destructive'}>
                       {answerFeedback.isCorrect
-                        ? (t.take.correctAnswer || 'Bonne réponse !')
-                        : (t.take.wrongAnswer || 'Mauvaise réponse. Vous ne pouvez pas modifier votre choix.')}
-                    </AlertDescription>
-                  </Alert>
+                        ? <CheckCircle2 className="h-4 w-4" />
+                        : <XCircle className="h-4 w-4" />}
+                      <AlertDescription>
+                        {answerFeedback.isCorrect
+                          ? t.take.correctAnswer
+                          : t.take.wrongAnswer}
+                      </AlertDescription>
+                    </Alert>
+                  )
                 )}
               </div>
             )}
